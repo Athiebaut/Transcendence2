@@ -1,14 +1,17 @@
+# Dockerfile
 FROM node:20-alpine
 WORKDIR /app
 
-# Install deps first for better caching
+# 🔧 Librairies nécessaires à Prisma & argon2 sur Alpine
+RUN apk add --no-cache openssl libc6-compat python3 make g++
+
+
+# Dépendances Node
 COPY package*.json ./
-RUN npm install
+RUN npm ci     # ou npm install si tu n'utilises pas le lockfile
 
-# Copy rest of the files
+# Code + Prisma
 COPY . .
-
-# Generate Prisma client
 RUN npx prisma generate
 
 EXPOSE 3000
