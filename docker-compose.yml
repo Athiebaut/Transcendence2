@@ -1,0 +1,29 @@
+services:
+  api:
+    build: .
+    container_name: transcendence-api
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: sh -c "npm run dev"
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: transcendence-nginx
+    depends_on:
+      - api
+    ports:
+      - "8443:443"  # host:container (rootless)
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./web:/srv:ro
+      - certs:/etc/nginx/certs
+      - ./certs-init.sh:/certs-init.sh:ro
+    entrypoint: ["/bin/sh","-lc","apk add --no-cache openssl && /certs-init.sh && exec nginx -g 'daemon off;'"]
+
+volumes:
+  certs:
