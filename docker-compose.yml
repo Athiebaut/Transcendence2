@@ -15,13 +15,12 @@ services:
     depends_on:
       - api
     ports:
-      - "8443:443"  # host:container (rootless)
+      - "8443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./web:/srv:ro
-      - certs:/etc/nginx/certs
-      - ./certs-init.sh:/certs-init.sh:ro
-    entrypoint: ["/bin/sh","-lc","apk add --no-cache openssl && /certs-init.sh && exec nginx -g 'daemon off;'"]
+      - ./web:/usr/share/nginx/html:ro
+      - ./certs:/etc/nginx/certs:ro     # ⬅️ bind-mount des certs générés
+    command: ["nginx", "-g", "daemon off;"]  # ⬅️ pas d'entrypoint custom
 
 volumes:
   certs:

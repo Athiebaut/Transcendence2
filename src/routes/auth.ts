@@ -22,12 +22,6 @@ const ARGON_OPTS: argon2.Options & { raw?: false } = {
   parallelism: 1,
 };
 
-// register
-const passwordHash = await argon2.hash(body.password, ARGON_OPTS);
-
-// login
-const ok = await argon2.verify(user.passwordHash, password);
-
 function getSecret(): Uint8Array {
   return new TextEncoder().encode(process.env.JWT_SECRET || 'dev-secret');
 }
@@ -48,6 +42,7 @@ app.post('/register', async (req, reply) => {
 	});
 	if (exists) return reply.code(409).send({ error: 'User already exists' });
 
+	//register
 	const passwordHash = await argon2.hash(body.password, ARGON_OPTS /* ou sans opts si tu n'en as pas */);
 
 	// enregistrement avec les deux paires (original + lower)
@@ -75,6 +70,7 @@ app.post('/login', async (req, reply) => {
 	});
 	if (!user) return reply.code(401).send({ error: 'Invalid credentials' });
 
+	//register
 	const ok = await argon2.verify(user.passwordHash, password);
 	if (!ok) return reply.code(401).send({ error: 'Invalid credentials' });
 
@@ -88,7 +84,15 @@ app.post('/login', async (req, reply) => {
 	reply.setCookie('access_token', token, {
 	path: '/', httpOnly: true, secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7,
 	});
-
+	if (!user) {
+		app.log.warn({ who: emailOrUsername }, 'login user not found');
+		return reply.code(401).send({ error: 'Invalid credentials' });
+	}
+	const ok2 = await argon2.verify(user.passwordHash, password);
+	if (!ok2) {
+		app.log.warn({ id: user.id }, 'login bad password');
+		return reply.code(401).send({ error: 'Invalid credentials' });
+	}
 	return reply.send({ user: { id: user.id, email: user.email, username: user.username } });
 });
 
@@ -108,3 +112,5 @@ app.post('/logout', async (_req, reply) => {
 	return reply.code(204).send();
 });
 }
+
+

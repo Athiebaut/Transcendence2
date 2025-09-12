@@ -1,4 +1,113 @@
-body { font-family: system-ui, sans-serif; margin: 0; }
-nav { display:flex; gap:1rem; padding: .75rem 1rem; border-bottom: 1px solid #ddd; }
-#view { padding: 1rem; }
-canvas { display:block; margin: 1rem auto; border: 1px solid #ccc; }
+--- Thème ---
+:root{
+  --bg:#0b1220;                 /* couleur de secours si l'image ne charge pas */
+  --surface: rgba(17,24,39,.34);/* cartes semi-transparentes (sans blur) */
+  --surface-border: rgba(255,255,255,.10);
+  --muted:#94a3b8;
+  --text:#e2e8f0;
+  --accent:#22d3ee;
+  --accent-2:#14b8a6;
+}
+
+/* Reset simple */
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui, Segoe UI, Roboto, Inter, sans-serif;color:var(--text);}
+
+/* --- Image de fond seule (pas de voile, pas de blur) --- */
+body{
+  min-height:100vh;
+  color:var(--text);
+  background: var(--bg) url("/assets/bg.webp?v=1") center / cover no-repeat fixed;
+}
+
+/* --- En-tête --- */
+.hero{
+  padding:48px 16px;
+  text-align:center;
+  border-bottom:1px solid var(--surface-border);
+  /* plus de blur */
+  background: rgba(2,6,23,.18); /* très léger fond pour la lisibilité du titre */
+}
+.hero h1{margin:0 0 8px 0;font-size:32px}
+.pill{
+  display:inline-block;margin-top:8px;padding:6px 10px;
+  border:1px solid var(--surface-border);border-radius:999px;
+  color:var(--muted);background:rgba(2,6,23,.28);
+}
+
+/* --- Grille & cartes --- */
+.grid{display:grid;gap:16px;padding:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{
+  background: var(--surface);              /* translucide, sans backdrop-filter */
+  border:1px solid var(--surface-border);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 10px 30px rgb(0 0 0 / 30%);
+}
+.card h2{margin:0 0 12px 0;font-size:18px}
+
+/* --- Formulaires --- */
+label{display:block;margin:10px 0 6px;color:var(--muted);font-size:14px}
+input{
+  width:100%;padding:12px 12px;border-radius:12px;
+  border:1px solid var(--surface-border);
+  background: rgba(2,6,23,.35); color:var(--text);
+  outline:none; transition: border-color .15s, box-shadow .15s, transform .05s;
+}
+input::placeholder{color:#7c8aa0}
+input:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(34,211,238,.18);
+}
+
+/* --- Boutons --- */
+button{
+  margin-top:10px; padding:12px 14px; border-radius:12px;
+  border:none; color:#001018; font-weight:700; cursor:pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2) 65%);
+  box-shadow: 0 6px 20px rgba(20,184,166,.35);
+  transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
+}
+button:hover{ filter: brightness(1.06); box-shadow: 0 8px 28px rgba(20,184,166,.45); }
+button:active{ transform: translateY(1px); }
+
+/* --- Sections diverses --- */
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.out{
+  background: rgba(2,6,23,.28);
+  border:1px solid var(--surface-border);
+  border-radius:12px; padding:10px; min-height:56px; white-space:pre-wrap;
+}
+
+/* --- Footer --- */
+.footer{
+  padding:12px;color:#8aa0b8;text-align:center;
+  border-top:1px solid var(--surface-border);
+  background: rgba(2,6,23,.18); /* sans blur */
+}
+
+/* (optionnel) thème encore plus “image pure” */
+
+body.theme-off{
+  --surface: rgba(17,24,39,.22);
+}
+
+/* === EMERGENCY OVERRIDES: force le fond image, pas de voile, pas de blur === */
+html, body { height: 100%; }
+
+body{
+  /* fond sombre de secours + image en dernier */
+  background: #0b1220 url("/assets/bg.webp?v=99") center / cover no-repeat scroll !important;
+  color: var(--text) !important;
+}
+
+/* Neutralise tout “voile” éventuel */
+body::before, body::after { content: none !important; display: none !important; }
+
+/* Neutralise un éventuel scrim local */
+.scrim::before { content: none !important; display: none !important; }
+
+/* Aucune opacité/bloc blanc par dessus involontairement */
+.hero{ background: rgba(2,6,23,.20); backdrop-filter: none; }
+.card{ background: rgba(10,15,25,.72) ; backdrop-filter: none; }
+.out { background: rgba(10,15,25,.50); }
