@@ -1,31 +1,24 @@
-const API = 'https://transcendence.localhost:8443';
 
-// Helper fetch JSON avec cookies
-async function req<T = unknown>(path: string, opts: RequestInit = {}) {
-  const res = await fetch(API + path, {
-    credentials: 'include',
-    headers: { 'content-type': 'application/json', ...(opts.headers || {}) },
-    ...opts,
-  });
-  const txt = await res.text();
-  let data: any;
-  try { data = txt ? JSON.parse(txt) : null; } catch { data = txt; }
-  return { ok: res.ok, status: res.status, data: data as T };
-}
+// 1) Choix FIX du domaine
+const API = 'https://api.127.0.0.1.nip.io:8443';
 
-function set(el: HTMLElement, value: unknown) {
-  el.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
-}
+// 2) Bouton Google → href dynamique
+const g = document.getElementById('btn-google') as HTMLAnchorElement | null;
+if (g) g.href = API + '/auth/google?next=%2F';
 
-// Ping API
-(async () => {
+// 3) Ping simple (sans headers/credentials) pour éviter un preflight
+async function ping() {
   const out = document.querySelector('#api-status') as HTMLElement;
   try {
-    const r = await req('/health');
+    const r = await fetch(API + '/health');
     out.textContent = r.ok ? 'UP' : `DOWN (${r.status})`;
-    (out as HTMLElement).style.color = r.ok ? '#22d3ee' : '#f43f5e';
-  } catch { out.textContent = 'DOWN'; (out as HTMLElement).style.color = '#f43f5e'; }
-})();
+    out.style.color = r.ok ? '#22d3ee' : '#f43f5e';
+  } catch {
+    out.textContent = 'DOWN';
+    out.style.color = '#f43f5e';
+  }
+}
+ping();
 
 // Register
 (document.querySelector('#form-register') as HTMLFormElement).addEventListener('submit', async (e) => {

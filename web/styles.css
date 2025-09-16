@@ -71,6 +71,13 @@ button{
 button:hover{ filter: brightness(1.06); box-shadow: 0 8px 28px rgba(20,184,166,.45); }
 button:active{ transform: translateY(1px); }
 
+.btn-google{
+  display:inline-block;margin-top:10px;padding:12px 14px;border-radius:12px;
+  background:#fff;color:#111827;font-weight:700;text-decoration:none;
+  border:1px solid rgba(0,0,0,.1);box-shadow:0 6px 20px rgba(0,0,0,.15);
+}
+.btn-google:hover{ filter:brightness(0.98); }
+
 /* --- Sections diverses --- */
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .out{
@@ -111,3 +118,4 @@ body::before, body::after { content: none !important; display: none !important; 
 .hero{ background: rgba(2,6,23,.20); backdrop-filter: none; }
 .card{ background: rgba(10,15,25,.72) ; backdrop-filter: none; }
 .out { background: rgba(10,15,25,.50); }
+

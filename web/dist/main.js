@@ -1,34 +1,19 @@
 // web/main.ts
-var API = "https://transcendence.localhost:8443";
-async function req(path, opts = {}) {
-  const res = await fetch(API + path, {
-    credentials: "include",
-    headers: { "content-type": "application/json", ...opts.headers || {} },
-    ...opts
-  });
-  const txt = await res.text();
-  let data;
-  try {
-    data = txt ? JSON.parse(txt) : null;
-  } catch {
-    data = txt;
-  }
-  return { ok: res.ok, status: res.status, data };
-}
-function set(el, value) {
-  el.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
-}
-(async () => {
+var API = "https://api.127.0.0.1.nip.io:8443";
+var g = document.getElementById("btn-google");
+if (g) g.href = API + "/auth/google?next=%2F";
+async function ping() {
   const out = document.querySelector("#api-status");
   try {
-    const r = await req("/health");
+    const r = await fetch(API + "/health");
     out.textContent = r.ok ? "UP" : `DOWN (${r.status})`;
     out.style.color = r.ok ? "#22d3ee" : "#f43f5e";
   } catch {
     out.textContent = "DOWN";
     out.style.color = "#f43f5e";
   }
-})();
+}
+ping();
 document.querySelector("#form-register").addEventListener("submit", async (e) => {
   e.preventDefault();
   const f = e.currentTarget;

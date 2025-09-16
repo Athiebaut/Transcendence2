@@ -11,14 +11,27 @@ datasource db {
 
 
 model User {
-  id             Int      @id @default(autoincrement())
-  email          String   @unique
-  username       String   @unique
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  username       String          @unique
   passwordHash   String
-  createdAt      DateTime @default(now())
+  createdAt      DateTime        @default(now())
+  emailLower     String          @unique
+  usernameLower  String          @unique
 
-  emailLower     String   @unique
-  usernameLower  String   @unique
+  accounts       OAuthAccount[]  // ⬅️ relation
 
   @@index([createdAt])
+}
+
+model OAuthAccount {
+  id          Int      @id @default(autoincrement())
+  provider    String
+  providerId  String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([provider, providerId])  // chaque compte provider est unique
+  @@index([userId])
 }

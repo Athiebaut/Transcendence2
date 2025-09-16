@@ -3,9 +3,11 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import cookie from '@fastify/cookie';
 import { PrismaClient } from '@prisma/client';
-import authRoutes from './routes/auth'; // si erreur ESM, essaie './routes/auth.js'
+import authRoutes from './routes/auth';
 import authGuard from './plugins/auth-guard';
 import usersRoutes from './routes/users';
+import authGoogleRoutes from './routes/auth-google';
+
 
 declare module 'fastify' {
   interface FastifyInstance { prisma: PrismaClient }
@@ -22,9 +24,13 @@ async function buildServer() {
   // plugins
   await app.register(cookie); // pas besoin d’options pour un cookie JWT non signé
   await app.register(cors, {
-    origin: ['https://front.localhost:8443'],
+    origin: ['https://front.localhost:8443', 'https://front.127.0.0.1.nip.io:8443'],
     credentials: true,
+    methods: ['GET','POST','PATCH','DELETE','OPTIONS'],
+    allowedHeaders: ['content-type', 'authorization'],
   });
+  await app.register(authGoogleRoutes);
+  app.listen({ port: Number(process.env.PORT ?? 3000), host: '::' });
 
   // health (ping DB réel)
   app.get('/health', async () => {

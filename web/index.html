@@ -34,6 +34,12 @@
         <label>Password <input name="password" type="password" required /></label>
         <button type="submit">Login</button>
       </form>
+
+      <!-- Bouton Google unique, pointant vers l'API nip.io -->
+      <a class="btn-google" href="https://api.127.0.0.1.nip.io:8443/auth/google?next=%2F">
+        Se connecter avec Google
+      </a>
+
       <pre class="out" id="out-login"></pre>
     </section>
 
@@ -47,8 +53,7 @@
     </section>
   </main>
 
-  <footer class="footer">Dev • front.localhost:8443 ↔ api transcendence.localhost:8443</footer>
+  <footer class="footer">Dev • front.127.0.0.1.nip.io:8443 ↔ api api.127.0.0.1.nip.io:8443</footer>
   <script type="module" src="/dist/main.js"></script>
-  s"></script>
 </body>
 </html>
