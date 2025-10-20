@@ -4,6 +4,49 @@
 
 ---
 
+## Démarrage rapide
+
+### Avec Docker
+
+```bash
+# 1) Variables d’env
+cp .env.example .env
+
+# 2) Certificat autosigné (si absent)
+./certs-init.sh   # ou déposez vos certs dans ./certs
+
+# 3) Build + run
+docker compose up -d --build
+
+# 4) Logs ciblés
+docker compose logs -f api
+
+# 5) Ouvrir l’app
+# Frontend (servi par Nginx) et API via proxy
+open https://localhost   # acceptez l’avertissement TLS autosigné
+```
+
+### Sans Docker (dev local)
+
+```bash
+# Installer deps
+npm ci
+
+# Générer Prisma Client
+npx prisma generate
+
+# Appliquer migrations (option dev)
+npx prisma migrate deploy
+
+# Lancer l’API (ex: tsx/vite-node selon scripts)
+npm run dev
+
+# Frontend
+# Servez ./web/ via un serveur statique (ou laissez Nginx en Docker s’en charger)
+```
+
+---
+
 ## Sommaire
 
 * [Aperçu](#aperçu)
@@ -72,49 +115,6 @@ Points clés : Auth **locale** + **Google OAuth**, routes utilisateurs, schéma 
 * **Proxy** : Nginx (TLS)
 * **Infra** : Docker & Docker Compose
 * **Outils** : ESLint, Prettier, Prisma CLI
-
----
-
-## Démarrage rapide
-
-### Avec Docker
-
-```bash
-# 1) Variables d’env
-cp .env.example .env
-
-# 2) Certificat autosigné (si absent)
-./certs-init.sh   # ou déposez vos certs dans ./certs
-
-# 3) Build + run
-docker compose up -d --build
-
-# 4) Logs ciblés
-docker compose logs -f api
-
-# 5) Ouvrir l’app
-# Frontend (servi par Nginx) et API via proxy
-open https://localhost   # acceptez l’avertissement TLS autosigné
-```
-
-### Sans Docker (dev local)
-
-```bash
-# Installer deps
-npm ci
-
-# Générer Prisma Client
-npx prisma generate
-
-# Appliquer migrations (option dev)
-npx prisma migrate deploy
-
-# Lancer l’API (ex: tsx/vite-node selon scripts)
-npm run dev
-
-# Frontend
-# Servez ./web/ via un serveur statique (ou laissez Nginx en Docker s’en charger)
-```
 
 ---
 
