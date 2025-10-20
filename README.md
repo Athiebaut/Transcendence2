@@ -1,12 +1,216 @@
-# Transcendence — Backend (Fastify/TS/SQLite)
+# Transcendence2
+
+> Backend **Fastify + Prisma**, proxy **Nginx** en **HTTPS** (certifs autosignés), et un petit **frontend** (HTML/CSS/TS) dans `web/`. Auth locale **et** OAuth **Google**. Déploiement via **Docker Compose**.
+
+---
+
+## Sommaire
+
+* [Aperçu](#aperçu)
+* [Fonctionnalités](#fonctionnalités)
+* [Architecture](#architecture)
+* [Stack & prérequis](#stack--prérequis)
+* [Démarrage rapide](#démarrage-rapide)
+
+  * [Avec Docker](#avec-docker)
+  * [Sans Docker (dev local)](#sans-docker-dev-local)
+* [Configuration (.env)](#configuration-env)
+
+  * [Exemple `.env.example`](#exemple-envexample)
+* [Scripts NPM](#scripts-npm)
+* [Structure du dépôt](#structure-du-dépôt)
+* [API (aperçu)](#api-aperçu)
+* [Base de données & Prisma](#base-de-données--prisma)
+* [TLS & certificats](#tls--certificats)
+* [Dépannage (Runbook)](#dépannage-runbook)
+* [Contribuer](#contribuer)
+* [Licence](#licence)
+
+---
+
+## Aperçu
+
+**Transcendence** est une base d’app pour un mini‑service web : API Node/TypeScript propulsée par **Fastify**, persistance via **Prisma** (SQLite par défaut, Postgres possible), **Nginx** en frontal (TLS), et un **frontend** léger situé dans `web/`.
+
+Points clés : Auth **locale** + **Google OAuth**, routes utilisateurs, schéma Prisma versionné par migrations, orchestration Docker simple.
+
+## Fonctionnalités
+
+* Auth locale (`/auth/*`) et **OAuth Google** (`/auth/google`, callback dédié)
+* Endpoints utilisateurs (`/users/*`) protégés par un **guard**
+* Proxy **Nginx** en **HTTPS** (certificat autosigné pour le dev)
+* Frontend minimal (HTML/CSS/TS) servi par Nginx
+
+## Architecture
+
+```
+                +---------------------+
+                |      Frontend       |
+                |     web/index.html  |
+                +----------+----------+
+                           |  HTTPS (443)
++-----------+     +--------v---------+      +------------------+
+|  Nginx    |<--->|   Backend API    |<---->|   Database (ORM) |
+|  :443 TLS |     |  Fastify :3000   |      | Prisma (SQLite/ |
+|  certs/   |     +------------------+      | Postgres)       |
++-----------+                                   ^
+                                                |
+                                           prisma/schema
+```
+
+* **Ports** : Nginx écoute en `443` et reverse‑proxy vers l’API (`:3000`).
+* **Callback OAuth** : exposé publiquement via Nginx (`GOOGLE_CALLBACK_URL`).
+* **Certifs dev** : `certs/selfsigned.crt` & `certs/selfsigned.key`.
+
+## Stack & prérequis
+
+* **Langages** : TypeScript 5, HTML/CSS
+* **Runtime** : Node.js ≥ 20
+* **API** : Fastify
+* **ORM** : Prisma
+* **DB** : SQLite par défaut (fichier), Postgres possible via `DATABASE_URL`
+* **Proxy** : Nginx (TLS)
+* **Infra** : Docker & Docker Compose
+* **Outils** : ESLint, Prettier, Prisma CLI
+
+---
 
 ## Démarrage rapide
 
-1. Copie `.env.example` en `.env` (tu peux garder les valeurs par défaut pour v0)
-2. Lancer les migrations et le serveur en mode dev :
+### Avec Docker
 
 ```bash
-# première fois (génère la DB et le client Prisma)
-docker compose run --rm api npm run prisma:migrate
-# lancer le service
-docker compose up --build
+# 1) Variables d’env
+cp .env.example .env
+
+# 2) Certificat autosigné (si absent)
+./certs-init.sh   # ou déposez vos certs dans ./certs
+
+# 3) Build + run
+docker compose up -d --build
+
+# 4) Logs ciblés
+docker compose logs -f api
+
+# 5) Ouvrir l’app
+# Frontend (servi par Nginx) et API via proxy
+open https://localhost   # acceptez l’avertissement TLS autosigné
+```
+
+### Sans Docker (dev local)
+
+```bash
+# Installer deps
+npm ci
+
+# Générer Prisma Client
+npx prisma generate
+
+# Appliquer migrations (option dev)
+npx prisma migrate deploy
+
+# Lancer l’API (ex: tsx/vite-node selon scripts)
+npm run dev
+
+# Frontend
+# Servez ./web/ via un serveur statique (ou laissez Nginx en Docker s’en charger)
+```
+
+---
+
+## Configuration (.env)
+
+| Variable               | Exemple                                  | Description                             |
+| ---------------------- | ---------------------------------------- | --------------------------------------- |
+| `NODE_ENV`             | `development`                            | Environnement d’exécution               |
+| `PORT`                 | `3000`                                   | Port HTTP de Fastify                    |
+| `DATABASE_URL`         | `file:./prisma/dev.db`                   | URL Prisma (SQLite par défaut)          |
+| `JWT_SECRET`           | `change-me`                              | Secret pour signer les JWT (si utilisé) |
+| `SESSION_SECRET`       | `another-secret`                         | Secret cookies/sessions (si utilisé)    |
+| `CORS_ORIGIN`          | `https://localhost`                      | Origine autorisée côté front            |
+| `GOOGLE_CLIENT_ID`     | `xxxx.apps.googleusercontent.com`        | OAuth Google                            |
+| `GOOGLE_CLIENT_SECRET` | `xxxxx`                                  | OAuth Google                            |
+| `GOOGLE_CALLBACK_URL`  | `https://localhost/auth/google/callback` | URL publique de callback via Nginx      |
+| `SSL_CERT_FILE`        | `./certs/selfsigned.crt`                 | Chemin cert TLS pour Nginx              |
+| `SSL_KEY_FILE`         | `./certs/selfsigned.key`                 | Chemin clé TLS pour Nginx               |
+
+### Exemple `.env.example`
+
+```dotenv
+NODE_ENV=development
+PORT=3000
+DATABASE_URL="file:./prisma/dev.db"
+JWT_SECRET=change-me
+SESSION_SECRET=change-me-too
+CORS_ORIGIN=https://localhost
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=https://localhost/auth/google/callback
+SSL_CERT_FILE=./certs/selfsigned.crt
+SSL_KEY_FILE=./certs/selfsigned.key
+```
+
+> Pour **Postgres** : `DATABASE_URL=postgresql://user:pass@host:5432/db?schema=public`.
+
+---
+
+## Scripts NPM
+
+> Ajustez selon votre `package.json`.
+
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc -p .",
+    "start": "node dist/main.js",
+    "lint": "eslint .",
+    "format": "prettier -w .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio"
+  }
+}
+```
+
+---
+
+## Structure du dépôt
+
+```
+.
+├── certs/
+│   ├── selfsigned.crt
+│   └── selfsigned.key
+├── certs-init.sh
+├── cookiejar.txt
+├── cookies.txt
+├── docker-compose.yml
+├── Dockerfile
+├── .gitignore
+├── nginx.conf
+├── package.json
+├── package-lock.json
+├── prisma/
+│   ├── migrations/
+│   │   ├── 20250911125639_init/
+│   │   │   └── migration.sql
+│   │   ├── 20250911143513_add_lower_cols_optional/
+│   │   │   └── migration.sql
+│   │   ├── 20250911143714_lower_cols_required_unique/
+│   │   │   └── migration.sql
+│   │   ├── 20250916150447_add_oauth/
+│   │   │   └── migration.sql
+│   │   └── migration_lock.toml
+│   └── schema.prisma
+├── README.md
+├── src/
+│   ├── main.ts
+│   ├── plugins/
+│   │   └── auth-guard.ts
+│   └── routes/
+│       ├── auth-google.ts
+│
+```
+
