@@ -2,17 +2,20 @@
 FROM node:20-alpine
 WORKDIR /app
 
-# 🔧 Librairies nécessaires à Prisma & argon2 sur Alpine
+
+# Dépendances natives nécessaires (Prisma + argon2)
 RUN apk add --no-cache openssl libc6-compat python3 make g++
 
 
-# Dépendances Node
+# Déps Node
 COPY package*.json ./
-RUN npm ci     # ou npm install si tu n'utilises pas le lockfile
+RUN npm ci
+
 
 # Code + Prisma
 COPY . .
 RUN npx prisma generate
 
+
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev"] # en prod: préfère "node dist/main.js"

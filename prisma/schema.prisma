@@ -1,37 +1,41 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+provider = "prisma-client-js"
+binaryTargets = ["native", "linux-musl-openssl-3.0.x"] // ✔ pour Alpine
 }
 
 
 datasource db {
-  provider = "sqlite"
-  url = env("DATABASE_URL")
+provider = "sqlite" // en dev; Postgres en prod recommandé
+url = env("DATABASE_URL")
 }
 
 
 model User {
-  id             Int             @id @default(autoincrement())
-  email          String          @unique
-  username       String          @unique
-  passwordHash   String
-  createdAt      DateTime        @default(now())
-  emailLower     String          @unique
-  usernameLower  String          @unique
+id Int @id @default(autoincrement())
+email String @unique
+emailLower String @unique // pour recherche/contrainte insensible à la casse
+username String @unique
+usernameLower String @unique
+passwordHash String?
+createdAt DateTime @default(now())
 
-  accounts       OAuthAccount[]  // ⬅️ relation
 
-  @@index([createdAt])
+accounts OAuthAccount[]
+
+
+@@index([createdAt])
 }
 
-model OAuthAccount {
-  id          Int      @id @default(autoincrement())
-  provider    String
-  providerId  String
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
 
-  @@unique([provider, providerId])  // chaque compte provider est unique
-  @@index([userId])
+model OAuthAccount {
+id Int @id @default(autoincrement())
+provider String
+providerId String
+userId Int
+user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+createdAt DateTime @default(now())
+
+
+@@unique([provider, providerId])
+@@index([userId])
 }

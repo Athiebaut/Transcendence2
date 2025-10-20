@@ -1,13 +1,29 @@
 {
   "compilerOptions": {
+    // Cible JS moderne (Node 20 ok)
     "target": "ES2022",
+    // ESM en sortie (import/export)
     "module": "ES2022",
-    "moduleResolution": "bundler",
+    // ⚠️ Préfère "nodenext" pour coller à Node/ESM
+    // (meilleure résolution des packages avec "exports")
+    "moduleResolution": "bundler", // acceptable si bundler; sinon voir version drop-in ci-dessous
+
+    // Typage strict partout
     "strict": true,
+    // Facilite les imports default depuis CJS
     "esModuleInterop": true,
+    // Gagne du temps de compilation sur les .d.ts
     "skipLibCheck": true,
+
+    // Dossiers I/O
     "outDir": "dist",
     "rootDir": "src"
+
+    // Optionnels utiles :
+    // "sourceMap": true,                // pour debugger en prod/dev
+    // "resolveJsonModule": true,        // importer des .json typés
+    // "verbatimModuleSyntax": true,     // évite réécriture des imports/exports
+    // "types": ["node"]                 // assure les types Node globaux
   },
   "include": ["src/**/*"]
 }

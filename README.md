@@ -47,30 +47,6 @@ npm run dev
 
 ---
 
-## Sommaire
-
-* [Aperçu](#aperçu)
-* [Fonctionnalités](#fonctionnalités)
-* [Architecture](#architecture)
-* [Stack & prérequis](#stack--prérequis)
-* [Démarrage rapide](#démarrage-rapide)
-
-  * [Avec Docker](#avec-docker)
-  * [Sans Docker (dev local)](#sans-docker-dev-local)
-* [Configuration (.env)](#configuration-env)
-
-  * [Exemple `.env.example`](#exemple-envexample)
-* [Scripts NPM](#scripts-npm)
-* [Structure du dépôt](#structure-du-dépôt)
-* [API (aperçu)](#api-aperçu)
-* [Base de données & Prisma](#base-de-données--prisma)
-* [TLS & certificats](#tls--certificats)
-* [Dépannage (Runbook)](#dépannage-runbook)
-* [Contribuer](#contribuer)
-* [Licence](#licence)
-
----
-
 ## Aperçu
 
 **Transcendence** est une base d’app pour un mini‑service web : API Node/TypeScript propulsée par **Fastify**, persistance via **Prisma** (SQLite par défaut, Postgres possible), **Nginx** en frontal (TLS), et un **frontend** léger situé dans `web/`.

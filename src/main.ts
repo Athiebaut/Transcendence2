@@ -1,57 +1,71 @@
-// src/main.ts
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import cookie from '@fastify/cookie';
 import { PrismaClient } from '@prisma/client';
 import authRoutes from './routes/auth';
-import authGuard from './plugins/auth-guard';
-import usersRoutes from './routes/users';
 import authGoogleRoutes from './routes/auth-google';
+import authGuard from './plugins/auth-guard';
 
 
+// Augmentation du type Fastify pour exposer Prisma proprement
 declare module 'fastify' {
-  interface FastifyInstance { prisma: PrismaClient }
+interface FastifyInstance { prisma: PrismaClient }
 }
+
 
 const prisma = new PrismaClient();
 
-async function buildServer() {
-  const app = Fastify({ logger: true, bodyLimit: 1024 * 1024 });
 
-  // expose Prisma
-  app.decorate('prisma', prisma);
-
-  // plugins
-  await app.register(cookie); // pas besoin d’options pour un cookie JWT non signé
-  await app.register(cors, {
-    origin: ['https://front.localhost:8443', 'https://front.127.0.0.1.nip.io:8443'],
-    credentials: true,
-    methods: ['GET','POST','PATCH','DELETE','OPTIONS'],
-    allowedHeaders: ['content-type', 'authorization'],
-  });
-  await app.register(authGoogleRoutes);
-  app.listen({ port: Number(process.env.PORT ?? 3000), host: '::' });
-
-  // health (ping DB réel)
-  app.get('/health', async () => {
-    await prisma.$queryRaw`SELECT 1`;
-    return { up: true, time: new Date().toISOString() };
-  });
-
-  // routes d’auth sous /auth
-  await app.register(authRoutes, { prefix: '/auth' });
-  await app.register(authGuard);                 // ⬅️ protège les routes suivantes
-  await app.register(usersRoutes, { prefix: '/users' });
-
-  // fermeture propre
-  app.addHook('onClose', async () => { await prisma.$disconnect(); });
-
-  // debug routes
-  app.ready(err => { if (!err) app.log.info(app.printRoutes()); });
-
-  return app;
+function frontOrigin() {
+// Une seule source d’origine pour CORS; configurable via env
+return process.env.FRONT_ORIGIN ?? 'https://front.localhost:8443';
 }
 
+
+async function buildServer() {
+const app = Fastify({ logger: true, bodyLimit: 1 * 1024 * 1024 });
+
+
+// 1) Ressources partagées
+app.decorate('prisma', prisma);
+
+
+// 2) Plugins globaux
+await app.register(cookie); // cookies non signés (JWT), sinon { secret: '...' }
+await app.register(cors, {
+origin: [frontOrigin()], // en dev: liste blanche stricte
+credentials: true,
+methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+allowedHeaders: ['content-type', 'authorization']
+});
+
+
+// 3) Routes publiques (pas de guard)
+await app.register(authRoutes, { prefix: '/auth' });
+await app.register(authGoogleRoutes); // expose /auth/google & /auth/google/callback
+
+
+// 4) Guard d’auth → toutes les routes déclarées APRÈS sont protégées
+await app.register(authGuard);
+
+
+// 5) Routes protégées
+const usersRoutes = (await import('./routes/users')).default; // lazy pour l’exemple
+await app.register(usersRoutes, { prefix: '/users' });
+
+
+// 6) Fermeture propre
+app.addHook('onClose', async () => { await prisma.$disconnect(); });
+
+
+// Debug des routes (facilite le dev)
+app.ready((err) => { if (!err) app.log.info(app.printRoutes()); });
+
+
+return app;
+}
+
+
 buildServer()
-  .then(app => app.listen({ port: Number(process.env.PORT ?? 3000), host: '::' }))
-  .catch(err => { console.error(err); process.exit(1); });
+.then((app) => app.listen({ port: Number(process.env.PORT ?? 3000), host: '0.0.0.0' }))
+.catch((err) => { console.error(err); process.exit(1); });
