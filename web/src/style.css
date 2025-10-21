@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+
+
+/* Définition des variables CSS personnalisées */
+:root {
+  /* Couleurs personnalisées */
+  --color-primary: #034748;
+  --color-secondary: #96705B;
+  --color-tertiary: #B5BEC6;
+  --color-black: #001021;
+
+  --color-primary-dark: #2563eb;  /* Bleu plus foncé pour hover */
+  --color-primary-light: #93c5fd; /* Bleu clair pour backgrounds */
+  --color-secondary-dark: #7c3aed;
+  --color-secondary-light: #c4b5fd;  
+  --color-tertiary-dark: #059669;
+  --color-tertiary-light: #86efac;
+  
+  /* Polices */
+  --font-primary: 'Inter', sans-serif;     /* Police principale pour le texte */
+  --font-secondary: 'JetBrains Mono', monospace; /* Police secondaire pour le code */
+  
+  /* Couleurs système (optionnel) */
+  /* --color-background: #ffffff;
+  --color-surface: #f8fafc;
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280; */
+}
+
+/* Mode sombre (optionnel) */
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #1f2937;
+    --color-surface: #374151;
+    --color-text: #f9fafb;
+    --color-text-muted: #d1d5db;
+  }
+} */
+
+/* Utilisation avec Tailwind CSS v4 */
+@theme {
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-light: var(--color-primary-light);
+  
+  --color-secondary: var(--color-secondary);
+  --color-secondary-dark: var(--color-secondary-dark);
+  --color-secondary-light: var(--color-secondary-light);
+  
+  --color-tertiary: var(--color-tertiary);
+  --color-tertiary-dark: var(--color-tertiary-dark);
+  --color-tertiary-light: var(--color-tertiary-light);
+  
+  --font-family-primary: var(--font-primary);
+  --font-family-secondary: var(--font-secondary);
+}
+
+/* Classes utilitaires personnalisées */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-tertiary { color: var(--color-tertiary); }
+.text-black { color: var(--color-black); }
+
+.bg-primary { background-color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-tertiary { background-color: var(--color-tertiary); }
+
+.font-primary { font-family: var(--font-primary); }
+.font-secondary { font-family: var(--font-secondary); }
+

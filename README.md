@@ -190,3 +190,77 @@ SSL_KEY_FILE=./certs/selfsigned.key
 │
 ```
 
+---
+
+// package.json (ANNOTÉ — JSONC, non valide pour npm)
+{
+  // Nom du package (backend uniquement)
+  "name": "transcendence-backend",
+
+  // Version interne (pas publiée, le package est private)
+  "version": "0.1.0",
+
+  // Empêche toute publication accidentelle sur npm
+  "private": true,
+
+  // Sortie Node au format ESM (import/export)
+  "type": "module",
+
+  "scripts": {
+    // Dev: exécute le code TypeScript à la volée avec tsx en mode watch
+    "dev": "tsx watch src/main.ts",
+
+    // Build: compile TS -> dist + génère le client Prisma
+    // ⚠️ Typiquement on exécute "prisma generate" AVANT tsc pour disposer des types à la compile
+    "build": "tsc -p tsconfig.json && prisma generate",
+
+    // Prod: lance le JS compilé
+    "start": "node dist/main.js",
+
+    // Prisma utilitaires
+    "prisma:generate": "prisma generate",
+    // Crée une nouvelle migration à partir du schema.prisma (dev local)
+    "prisma:migrate": "prisma migrate dev --name init",
+    // Applique les migrations existantes (CI/Prod)
+    "prisma:deploy": "prisma migrate deploy",
+
+    // Frontend minimal (bundlé avec esbuild dans web/dist/main.js)
+    "web:build": "esbuild web/main.ts --bundle --outfile=web/dist/main.js --platform=browser --format=esm --target=es2020",
+    "web:watch": "esbuild web/main.ts --bundle --outfile=web/dist/main.js --platform=browser --format=esm --target=es2020 --watch"
+  },
+
+  "dependencies": {
+    // Fastify cœur HTTP
+    "fastify": "^4.29.1",
+    // CORS et cookies (sessions/jwt en cookie)
+    "@fastify/cors": "^8.5.0",
+    "@fastify/cookie": "^9.4.0",
+
+    // AuthZ/signature JWT et JOSE
+    "jose": "^5.9.3",
+
+    // Validation de payloads
+    "zod": "^3.23.8",
+
+    // Hash de mots de passe (module natif : requiert toolchain en build)
+    "argon2": "^0.41.1",
+
+    // ORM + client généré (versions alignées)
+    "@prisma/client": "^5.18.0"
+  },
+
+  "devDependencies": {
+    // TypeScript + exécution TS à chaud
+    "typescript": "^5.5.4",
+    "tsx": "^4.19.0",
+
+    // Bundler frontend
+    "esbuild": "^0.25.9",
+
+    // Prisma CLI (doit matcher la version du client)
+    "prisma": "^5.18.0",
+
+    // Types Node (attention à la cohérence avec ta version Node réelle)
+    "@types/node": "^22.5.0"
+  }
+}

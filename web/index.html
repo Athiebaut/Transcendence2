@@ -1,59 +1,27 @@
-<!doctype html>
-<html lang="fr">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Transcendence — Accueil</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcendance</title>
+  <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
+  <link rel="stylesheet" href="/src/style.css" />
+  <script type="module" src="/src/main.ts"></script>
 </head>
-<body>
-  <header class="hero">
-    <h1>Transcendence</h1>
-    <p>Backend Fastify + Auth + SQLite</p>
-    <div class="pill">
-      API: <code id="api-status">checking…</code>
-    </div>
-  </header>
+<body class="flex items-center justify-center h-screen bg-black">
 
-  <main class="grid">
-    <section class="card">
-      <h2>Créer un compte</h2>
-      <form id="form-register">
-        <label>Email <input name="email" type="email" required /></label>
-        <label>Username <input name="username" required minlength="3" /></label>
-        <label>Password <input name="password" type="password" required minlength="8" /></label>
-        <button type="submit">Register</button>
-      </form>
-      <pre class="out" id="out-register"></pre>
-    </section>
 
-    <section class="card">
-      <h2>Se connecter</h2>
-      <form id="form-login">
-        <label>Email ou Username <input name="emailOrUsername" required /></label>
-        <label>Password <input name="password" type="password" required /></label>
-        <button type="submit">Login</button>
-      </form>
+	<!-- Main container !!!!!!!!!! -->
+	<div id="app" class="flex w-full justify-center items-center bg-black overflow-auto">
+		<!-- Content will be injected here -->
+	</div>
 
-      <!-- Bouton Google unique, pointant vers l'API nip.io -->
-      <a class="btn-google" href="https://api.127.0.0.1.nip.io:8443/auth/google?next=%2F">
-        Se connecter avec Google
-      </a>
 
-      <pre class="out" id="out-login"></pre>
-    </section>
 
-    <section class="card">
-      <h2>Profil</h2>
-      <div class="row">
-        <button id="btn-me">/auth/me</button>
-        <button id="btn-logout">Logout</button>
-      </div>
-      <pre class="out" id="out-me"></pre>
-    </section>
-  </main>
-
-  <footer class="footer">Dev • front.127.0.0.1.nip.io:8443 ↔ api api.127.0.0.1.nip.io:8443</footer>
-  <script type="module" src="/dist/main.js"></script>
 </body>
+<!-- <footer class="fixed bottom-0 w-full text-center text-white p-4 bg-primary text-gray-500">
+  &copy; 2024 Transcendance. All rights reserved.
+</footer> -->
 </html>
+
+
