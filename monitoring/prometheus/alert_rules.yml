@@ -1,0 +1,21 @@
+groups:
+- name: node.rules
+  rules:
+  - alert: InstanceDown
+    expr: up == 0
+    labels:
+      severity: critical
+      team: infra
+    annotations:
+      summary: "Instance {{ $labels.instance }} indisponible"
+      description: "La cible {{ $labels.instance }} (job={{ $labels.job }}) renvoie up == 0."
+
+  - alert: HighCPUUsage
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode='idle'}[5m])) * 100) > 90
+    for: 5m
+    labels:
+      severity: warning
+      team: platform
+    annotations:
+      summary: "CPU élevé sur {{ $labels.instance }}"
+      description: "Utilisation CPU > 90% sur {{ $labels.instance }} pendant 5 minutes."
