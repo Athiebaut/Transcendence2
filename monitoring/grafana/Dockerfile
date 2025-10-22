@@ -11,11 +11,5 @@ WORKDIR /
 
 COPY grafana.ini /grafana/grafana.ini
 
-COPY run.sh /run.sh
-RUN chmod +x run.sh
 
-ENTRYPOINT ["./run.sh"]
-
-
-
-#CMD ["/grafana/bin/grafana", "server", "--homepath", "/grafana", "--config", "/grafana/grafana.ini"]
+ENTRYPOINT ["/grafana/bin/grafana", "server", "--homepath", "/grafana", "--config", "/grafana/grafana.ini"]

@@ -1,17 +1,19 @@
+version: '3.8'
+
 services:
   prometheus:
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile
     image: prometheus
     container_name: prometheus
     ports:
       - "9090:9090"
-    build:
-      context: ./prometheus
-      dockerfile: Dockerfile
     volumes:
-      - prometheus_data:/var/lib/prometheus
+      - prometheus_data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     restart: always
-    extra_hosts:   #access host machine from inside container      deleted to use docker's network
-      - "host.docker.internal:host-gateway"
+    # extra_hosts removed or keep as needed
   grafana:
     image: grafana
     container_name: grafana
@@ -28,6 +30,30 @@ services:
       - grafana_data:/var/lib/grafana
     restart: always
 
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: always
+
 volumes:
   grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ubuntu/pong/grafana/data
   prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ubuntu/pong/prometheus/data
+
