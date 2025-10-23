@@ -8,7 +8,7 @@ RUN wget https://github.com/prometheus/prometheus/releases/download/v3.6.0/prome
     rm prometheus-3.6.0.linux-amd64.tar.gz
 
 WORKDIR /prometheus
-COPY prometheus.yml /prometheus/prometheus.yml
+COPY prometheus.yml /prometheus.yml
 COPY alert_rules.yml /prometheus/alert_rules.yml
 
-ENTRYPOINT ["./prometheus", "--config.file=prometheus.yml"]
+ENTRYPOINT ["./prometheus", "--config.file=/prometheus.yml"]
