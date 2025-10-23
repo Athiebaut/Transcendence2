@@ -42,4 +42,4 @@ scrape_configs: #targets to scrap metrics from
     - targets: ['cadvisor:8080']
 
 rule_files: # alert rules location. allow to create alert rules to monitor systems through web UI
-  - "/prometheus/alert_rules.yml"
+  - "/alert_rules.yml"
