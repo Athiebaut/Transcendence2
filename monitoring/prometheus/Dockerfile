@@ -8,6 +8,7 @@ RUN wget https://github.com/prometheus/prometheus/releases/download/v3.6.0/prome
     rm prometheus-3.6.0.linux-amd64.tar.gz
 
 COPY run.sh /run.sh
+RUN chmod +x /run.sh
 
 WORKDIR /prometheus
 COPY prometheus.yml /prometheus/prometheus.yml
