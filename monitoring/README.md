@@ -4,4 +4,4 @@ Second build with CAdvisor to get accurate datas about each containers on grafan
 CAdvisor get datas from volumes given in compose file.  
 Then prometheus scrape CAdvisor metrics endpoint.  
 Finally Grafana get datas from Prometheus to display on dashboard.  
-Integrated alerts in Prometheus to easily monitor container status.  
+Integrated alerts in Prometheus to easily monitor container's status.  
