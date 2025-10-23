@@ -1,18 +1,18 @@
 groups:
 - name: node.rules
   rules:
-  - alert: InstanceDown
-    expr: up == 0
+  - alert: InstanceDown #custom alert name
+    expr: up == 0 #query to execute, if true, triggered
     labels:
       severity: critical
-      team: infra
-    annotations:
+      team: infra #custom team label
+    annotations: #titre et description de l'alerte
       summary: "Instance {{ $labels.instance }} indisponible"
       description: "La cible {{ $labels.instance }} (job={{ $labels.job }}) renvoie up == 0."
 
   - alert: HighCPUUsage
     expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode='idle'}[5m])) * 100) > 90
-    for: 5m
+    for: 5m #expr must be true during this time to be triggered
     labels:
       severity: warning
       team: platform
