@@ -8,34 +8,32 @@ services:
     image: prometheus
     container_name: prometheus
     ports:
-      - "9090:9090"
+      - "9090:9090" #allow access to Prometheus web
     volumes:
-      - prometheus_data:/prometheus
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus #persistent data for prometheus
     restart: always
-    # extra_hosts removed or keep as needed
   grafana:
     image: grafana
     container_name: grafana
-    depends_on:
+    depends_on: #needs prometheus to be running first
       - prometheus
     ports:
       - "3000:3000"
     build:
       context: ./grafana
       dockerfile: Dockerfile
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     volumes:
-      - grafana_data:/var/lib/grafana
+      - grafana_data:/var/lib/grafana #persistent data for grafana
     restart: always
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+  cadvisor: #monitor docker containers
+    image: gcr.io/cadvisor/cadvisor:latest #use latest cadvisor image (no dockerfile, maybe add one later)
     container_name: cadvisor
-    ports:
-      - "8080:8080"
-    volumes:
+    # ports:
+    #   - "8080:8080"
+    volumes: #necessary volumes for cadvisor to monitor docker and system stats
       - /:/rootfs:ro
       - /var/run:/var/run:ro
       - /sys:/sys:ro

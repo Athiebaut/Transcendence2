@@ -11,5 +11,8 @@ WORKDIR /
 
 COPY grafana.ini /grafana/grafana.ini
 
+COPY run.sh /run.sh
 
-ENTRYPOINT ["/grafana/bin/grafana", "server", "--homepath", "/grafana", "--config", "/grafana/grafana.ini"]
+
+ENTRYPOINT ["./run.sh"]
+
