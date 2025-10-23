@@ -24,6 +24,7 @@ services:
     #   - "host.docker.internal:host-gateway"
     volumes:
       - grafana_data:/var/lib/grafana #persistent data for grafana
+      - grafana_data:/grafana/data #persistent data for grafana
     restart: always
 
   cadvisor: #monitor docker containers

@@ -4,6 +4,7 @@ RUN apk update && apk upgrade && apk add libc6-compat curl
 RUN curl -L -O https://dl.grafana.com/oss/release/grafana-12.2.0.linux-amd64.tar.gz
 RUN tar -zxvf grafana-12.2.0.linux-amd64.tar.gz
 RUN mv grafana-12.2.0 /grafana
+RUN mkdir /grafana/data
 RUN adduser -D grafana
 
 
