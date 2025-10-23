@@ -12,13 +12,13 @@ alerting: #alertmanager allows to group alerts. Not used here
 scrape_configs: #targets to scrap metrics from
 - job_name: prometheus #custom job name for personnal vizualisation
   honor_timestamps: true #use timestamp from metrics 
-  scrape_interval: 1s #how often to scrap metrics from this target
+  scrape_interval: 1s #how often to scrap metrics from this target (here not very useful because same values than global)
   scrape_timeout: 1s
   metrics_path: /metrics #what web path used to scrap metrics (can see the result on web search or even curl)
   scheme: http #http or https
   static_configs:
   - targets: #list of targets to scrap metrics from
-    - prometheus:9100
+    - prometheus:9090 #ip adress to get metrics from
 - job_name: grafana
   honor_timestamps: true
   scrape_interval: 1s
@@ -38,7 +38,6 @@ scrape_configs: #targets to scrap metrics from
   - targets:
     - 172.17.0.1:9091
 - job_name: 'cadvisor'
-  # Prometheus peut résoudre le nom 'cadvisor' via le réseau de compose
   static_configs:
     - targets: ['cadvisor:8080']
 
