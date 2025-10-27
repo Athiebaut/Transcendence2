@@ -3,7 +3,6 @@ services:
     build:
       context: ./prometheus
       dockerfile: Dockerfile
-    image: prometheus
     container_name: prometheus
     ports:
       - "9090:9090" #allow access to Prometheus web
@@ -11,7 +10,6 @@ services:
       - prometheus_data:/prometheus #persistent data for prometheus
     restart: always
   grafana:
-    image: grafana
     container_name: grafana
     depends_on: #needs prometheus to be running first
       - prometheus
