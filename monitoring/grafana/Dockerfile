@@ -10,7 +10,12 @@ RUN adduser -D grafana
 
 WORKDIR /
 
-COPY grafana.ini /grafana/grafana.ini
+COPY grafana.ini /grafana.ini
+COPY ./grafana.key /grafana/grafana.key
+COPY ./grafana.crt /grafana/grafana.crt
+
+RUN chgrp -R grafana /grafana/grafana.crt /grafana/grafana.key
+RUN chmod 440 /grafana/grafana.crt /grafana/grafana.key
 
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
