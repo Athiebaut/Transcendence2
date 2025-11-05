@@ -1,10 +1,94 @@
-node_modules
-#.dist
-#coverage
-#.env
-#prisma/dev.db
-#prisma/dev.db-journal.env
-cookiejar.txt
-cookies.txt
+# =========================
+# OS & éditeurs
+# =========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+.eslintcache
+
+# =========================
+# Node / TypeScript
+# (on GARDE les lockfiles)
+# =========================
+node_modules/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Builds / caches
+# =========================
+dist/
+build/
+coverage/
+.vite/
+.cache/
+.out/
+.next/
+
+# Front (Vite) – artefacts
+web/dist/
+
+# =========================
+# Environnements (ne jamais committer les vrais .env)
+# =========================
+.env
+.env.*
+api/.env
+web/.env
+!*.env.example
+!api/.env.example
+!web/.env.example
+.envrc
+
+# =========================
+# Bases locales (SQLite, etc.)
+# =========================
+*.sqlite
+*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.db-shm
+*.db-wal
+prisma/dev.db
+
+# =========================
+# Certificats & clés
+# =========================
 certs/*.key
-web/dist
+certs/*.crt
+certs/*.pem
+certs/*.csr
+certs/*.cer
+certs/*.der
+certs/*.p12
+certs/*.srl
+!certs/.gitkeep
+
+# =========================
+# Docker / runtime
+# =========================
+docker-volumes/
+*.pid
+docker-compose.override.yml
+
+# =========================
+# Logs & temporaires
+# =========================
+logs/
+*.log
+tmp/
+.tmp/
+
+# =========================
+# Archives
+# =========================
+*.zip
+*.7z
+*.tar
+*.tgz
