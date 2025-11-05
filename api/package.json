@@ -10,8 +10,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:deploy": "prisma migrate deploy",
-    "web:build": "esbuild web/main.ts --bundle --outfile=web/dist/main.js --platform=browser --format=esm --target=es2020",
-    "web:watch": "esbuild web/main.ts --bundle --outfile=web/dist/main.js --platform=browser --format=esm --target=es2020 --watch"
+    "web:build": "npm --prefix /web ci && npm --prefix /web run build",
+    "web:watch": "esbuild ../web/main.ts --bundle --outfile=../web/dist/main.js --platform=browser --format=esm --target=es2020 --watch"
+
   },
   "dependencies": {
     "@fastify/cookie": "^9.4.0",

@@ -23,7 +23,7 @@ docker compose logs -f api
 
 # 5) Ouvrir l’app
 # Frontend (servi par Nginx) et API via proxy
-open https://localhost   # acceptez l’avertissement TLS autosigné
+open https://localhost:8443/  # acceptez l’avertissement TLS autosigné
 ```
 
 ### Sans Docker (dev local)

@@ -1,0 +1,8 @@
+title = "Transcendence – gitleaks config"
+
+[allowlist]
+description = "Ignore les fichiers d'exemple d'env (placeholders)"
+paths = [
+  "api/.env.example",
+  "web/.env.example"
+]
