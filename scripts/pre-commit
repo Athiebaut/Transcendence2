@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
-docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest \
-  detect --source="/repo" --staged --redact
+
+# Ne lance rien s'il n'y a rien de staged
+if ! git diff --cached --name-only --diff-filter=ACM | grep -q .; then
+  exit 0
+fi
+
+# Scan des fichiers STAGED uniquement (bloque le commit si fuite)
+docker run --rm \
+  -v "$PWD:/repo" -w /repo \
+  zricethezav/gitleaks:latest \
+  protect --staged --redact --verbose
+
