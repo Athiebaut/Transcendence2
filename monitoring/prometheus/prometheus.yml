@@ -1,0 +1,45 @@
+global: #config global override by local settings
+  scrape_interval: 15s #how often prometheus scraps metrics (low during development, should be increased in prod)
+  scrape_timeout: 10s #timeout for a scrap request (must be lower than scrape interval to avoid multiple scrap requests and infinite scrape queue)
+  evaluation_interval: 15s #interal to evaluate alert rules
+alerting: #alertmanager allows to group alerts. Not used here
+  alertmanagers:
+  - static_configs:
+    - targets: []
+    scheme: http
+    timeout: 10s
+    api_version: v2
+scrape_configs: #targets to scrap metrics from
+- job_name: prometheus #custom job name for personnal vizualisation
+  honor_timestamps: true #use timestamp from metrics 
+  scrape_interval: 15s #how often to scrap metrics from this target (here not very useful because same values than global)
+  scrape_timeout: 10s
+  metrics_path: /metrics #what web path used to scrap metrics (can see the result on web search or even curl)
+  scheme: http #http or https
+  static_configs:
+  - targets: #list of targets to scrap metrics from
+    - prometheus:9090 #ip adress to get metrics from
+- job_name: grafana
+  honor_timestamps: true
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets:
+    - grafana:9100
+- job_name: vps
+  honor_timestamps: true
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets:
+    - 172.17.0.1:9091
+- job_name: 'cadvisor'
+  static_configs:
+    - targets: ['cadvisor:8080']
+
+rule_files: # alert rules location. allow to create alert rules to monitor systems through web UI
+  - "/alert_rules.yml"
