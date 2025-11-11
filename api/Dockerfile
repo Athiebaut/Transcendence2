@@ -17,6 +17,11 @@ COPY src ./src
 # Génère Prisma Client
 RUN npx prisma generate
 
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
+
 EXPOSE 3000
-CMD ["npm", "run", "dev"]  # prod: "npm run build && node dist/main.js"
+
+CMD ["npm", "run", "dev", "--", "--host"]
+#ENTRYPOINT ["/run.sh"]
 

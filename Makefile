@@ -87,7 +87,7 @@ up: env-init certs build-front
 	$(MAKE) guard-env
 	@# Ne bloque pas si le port est occupé, mais avertit
 	@if ss -ltn | grep -q ":$(PORT) "; then $(call warn,Le port $(PORT) semble occupé, le démarrage de nginx peut échouer.); fi
-	$(COMPOSE) up -d --build
+	$(COMPOSE) up --build
 	$(call ok,Stack démarrée. Ouvre: https://localhost:$(PORT))
 
 down:
@@ -164,6 +164,7 @@ env-init:
 	else \
 	  $(call warn,$(ENV_EXAMPLE) introuvable. Crée-le puis relance → make env-init.); \
 	fi
+
 
 # -------- Utilities --------
 reset:

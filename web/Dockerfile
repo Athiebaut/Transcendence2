@@ -16,5 +16,9 @@ COPY . .
 # Exposer le port Vite
 EXPOSE 5173
 
-# Commande pour lancer le serveur de dev avec hot reload
-CMD ["npm", "run", "dev", "--", "--host"]
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
+
+
+ENTRYPOINT ["./run.sh"]
+
