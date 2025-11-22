@@ -9,12 +9,13 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@babylonjs/core": "^8.25.0",
+    "@babylonjs/core": "^8.38.0",
     "@babylonjs/inspector": "^8.25.0",
     "typescript": "~5.8.3",
     "vite": "^7.1.2"
   },
   "dependencies": {
+    "@babylonjs/loaders": "^8.38.0",
     "@tailwindcss/vite": "^4.1.12",
     "tailwindcss": "^4.1.12"
   }

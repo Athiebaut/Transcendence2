@@ -1,23 +1,42 @@
-import { renderPublic } from './renderers/render_public';
+// web/src/main.ts
 
-export function addToHistory(page: string) {
-	if (page !== history.state?.page) {
-		const currentPath = window.location.pathname.substring(1) || 'home';
-		if (page !== currentPath) {
-			history.pushState({ page }, '', `/${page}`);
-		}
-	}
-	// history.pushState({page}, '', `/${page}`);
+import { renderRoute } from "./router";
+import { initGoose3D } from "./goose3d";
+
+function bootstrap() {
+  const app = document.querySelector<HTMLDivElement>("#app");
+  if (!app) {
+    console.error("#app container not found");
+    return;
+  }
+
+  // Lancer l’oie une fois au démarrage
+  initGoose3D();
+
+  // Première route
+  renderRoute(window.location.pathname);
+
+  // Gestion des boutons back/forward
+  window.addEventListener("popstate", () => {
+    renderRoute(window.location.pathname);
+  });
+
+  // Navigation interne via <a data-nav>
+  document.body.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+    const link = target.closest("a[data-nav]") as HTMLAnchorElement | null;
+    if (!link) return;
+
+    const href = link.getAttribute("href");
+    if (!href) return;
+
+    event.preventDefault();
+    window.history.pushState({}, "", href);
+    renderRoute(href);
+  });
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-	const page = window.location.pathname === '/' ? 'home' : window.location.pathname.slice(1);
-	//Modifier a l'avenir pour gerer les sessions
-	renderPublic(page);
-	// history.pushState({page}, '', `/${page}`);
-});
+bootstrap();
 
-window.addEventListener('popstate', (event) => {
-	const page = event.state?.page || 'home'
-	renderPublic(page);
-});

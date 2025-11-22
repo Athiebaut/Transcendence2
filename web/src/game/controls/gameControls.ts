@@ -28,7 +28,7 @@ function setupSmoothMovementControls(scene: Scene): void {
 
     window.addEventListener("keydown", (ev) => {
         switch (ev.code) {
-            case "KeyW":
+            case "KeyZ":
                 player1Up = true;
                 break;
             case "KeyS":
@@ -45,7 +45,7 @@ function setupSmoothMovementControls(scene: Scene): void {
     
     window.addEventListener("keyup", (ev) => {
         switch (ev.code) {
-            case "KeyW":
+            case "KeyZ":
                 player1Up = false;
                 break;
             case "KeyS":
