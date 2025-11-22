@@ -69,7 +69,7 @@ export default function Home(): string {
 
             <div class="flex flex-wrap gap-3">
               <a
-                href="/pong"
+                href="/play"
                 data-nav
                 class="wood-sign-btn px-6 py-3 text-base font-semibold"
               >

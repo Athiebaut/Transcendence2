@@ -6,6 +6,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Pong from "./pages/Pong";
 import { setGoose3DActive } from "./goose3d";
+import Play from "./pages/Play";
+
 
 type RouteHandler = () => string;
 
@@ -16,6 +18,7 @@ const routes: Record<string, RouteHandler> = {
   "/register": Register,
   "/dashboard": Dashboard,
   "/pong": Pong,
+  "/play": Play,
 };
 
 export async function renderRoute(path: string) {
