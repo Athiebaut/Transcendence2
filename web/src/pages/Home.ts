@@ -1,5 +1,3 @@
-// web/src/pages/Home.ts
-
 export default function Home(): string {
   return `
     <div class="min-h-screen flex flex-col relative overflow-hidden">

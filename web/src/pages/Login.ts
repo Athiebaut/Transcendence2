@@ -1,5 +1,3 @@
-// web/src/pages/Login.ts
-
 export default function Login(): string {
   return `
     <div class="min-h-screen flex items-center justify-center relative overflow-hidden">

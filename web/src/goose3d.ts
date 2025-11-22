@@ -1,5 +1,3 @@
-// web/src/goose3d.ts
-
 import {
   Engine,
   Scene,
@@ -91,7 +89,7 @@ export function initGoose3D() {
     antialias: false,               // Désactiver l'antialiasing pour éviter les ralentissements
   });
 
-  // 👉 Rendu optimisé - limiter le DPR pour éviter la surcharge
+  // Rendu optimisé - limiter le DPR pour éviter la surcharge
   const effectiveDpr = Math.min(dpr, 2); // Limiter à 2x max
   engine.setHardwareScalingLevel(1 / effectiveDpr);
 
@@ -130,7 +128,7 @@ export function initGoose3D() {
       // 👉 TAILLE DU MODÈLE (légèrement plus grande pour mieux la voir)
       goose.scaling.scaleInPlace(0.35);
 
-      // --- SPAWN ALÉATOIRE EN 2D (comme Desktop Goose!) ---
+      // --- SPAWN ALÉATOIRE EN 2D ---
       const left = camera?.orthoLeft ?? -5;
       const right = camera?.orthoRight ?? 5;
       const bottom = camera?.orthoBottom ?? -3;
@@ -157,7 +155,7 @@ export function initGoose3D() {
           animationGroups.map((g) => g.name)
         );
 
-        // Noms que tu veux utiliser
+        // Noms utilises
         const WALK_NAME = "fancywalk";
         const IDLE_NAMES = ["gooseidle", "goose_idle_proud", "gooseSneakIdle"];
 
@@ -182,12 +180,12 @@ export function initGoose3D() {
         console.log("Aucune AnimationGroup trouvée sur goose.glb");
       }
       
-      // 👉 Rendre l'oie cliquable
+      // Rendre l'oie cliquable
       goose.isPickable = true;
     }
   );
 
-  // 👉 Gestion du clic sur l'oie
+  // Gestion du clic sur l'oie
   scene.onPointerDown = (_evt, pickResult) => {
     if (pickResult.hit && pickResult.pickedMesh && goose) {
       // Vérifier si on a cliqué sur l'oie ou un de ses enfants
@@ -242,7 +240,7 @@ function updateCameraOrtho() {
   const height = engine.getRenderHeight() || 1;
   const aspect = width / height;
 
-  // 👉 Vue plus large pour que l'oie puisse se balader partout
+  // Vue plus large pour que l'oie puisse se balader partout
   const worldHeight = 8;  // Hauteur du monde visible
   const worldWidth = worldHeight * aspect;
 
@@ -281,7 +279,7 @@ function playWalkAnimation() {
   stopCurrentIdle();
   if (walkAnim) {
     walkAnim.reset();
-    // 👉 Vitesse d'animation ajustée pour un meilleur rendu
+    // Vitesse d'animation ajustée pour un meilleur rendu
     walkAnim.start(true, 0.5); // loop, vitesse réduite pour plus de fluidité
   }
 }
@@ -397,7 +395,7 @@ function updateGoose() {
       const finalDistance = Vector3.Distance(startPos, targetPos);
       moveDuration = Math.max(1.5, finalDistance / SPEED_BASE);
 
-      // 👉 Orientation vers la destination (rotation sur Y)
+      // Orientation vers la destination (rotation sur Y)
       const direction = targetPos.subtract(startPos);
       // Correction: inverser les paramètres pour orienter l'oie dans la bonne direction
       const angle = Math.atan2(-direction.x, -direction.z);
@@ -426,7 +424,7 @@ function updateGoose() {
     goose.position.x = newPos.x;
     goose.position.z = newPos.z;
 
-    // 👉 Bobbing pendant la marche
+    // Bobbing pendant la marche
     walkPhase += dt * BOBBING_FREQUENCY;
     const bobbing = Math.sin(walkPhase) * BOBBING_AMPLITUDE;
     goose.position.y = bobbing;

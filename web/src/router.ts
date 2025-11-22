@@ -26,7 +26,7 @@ export async function renderRoute(path: string) {
   const handler = routes[cleanPath] ?? NotFound;
 
   const isHome = cleanPath === "/" || cleanPath === "/home";
-  setGoose3DActive(isHome); // 👉 oie visible seulement sur la Home
+  setGoose3DActive(isHome); // oie visible seulement sur la Home
 
   // Nettoyer le jeu Pong précédent si on quitte la page Pong
   const previousPath = window.location.pathname.split("?")[0].split("#")[0];

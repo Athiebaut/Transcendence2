@@ -1,5 +1,3 @@
-// web/src/pages/Dashboard.ts
-
 export default function Dashboard(): string {
   return `
     <div class="min-h-screen flex flex-col relative overflow-hidden bg-slate-950 text-slate-100">

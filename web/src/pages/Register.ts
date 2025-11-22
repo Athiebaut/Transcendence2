@@ -1,5 +1,3 @@
-// web/src/pages/Register.ts
-
 export default function Register(): string {
   return `
     <div class="min-h-screen flex items-center justify-center relative overflow-hidden">
