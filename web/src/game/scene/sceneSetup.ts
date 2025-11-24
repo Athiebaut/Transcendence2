@@ -1,8 +1,12 @@
 import { Scene, ArcRotateCamera, Vector3, HemisphericLight, MeshBuilder, StandardMaterial, Color3, Mesh, GlowLayer } from "@babylonjs/core";
 import { FIELD_CONFIG, GAME_OBJECTS, POSITIONS, COLORS, VISUAL_CONFIG } from "../config/gameConfig";
+import type { GameMode } from "../config/gameModeConfig";
+import { GAME_MODES } from "../config/gameModeConfig";
 
 
-export function setupScene(scene: Scene): void {
+export function setupScene(scene: Scene, mode: GameMode = 'pvp1v1'): void {
+    const config = GAME_MODES[mode];
+    
     setupCamera(scene);
     setupLights(scene);
     
@@ -10,14 +14,35 @@ export function setupScene(scene: Scene): void {
     createField(scene);
     createWalls(scene);
     
-    // Créer les éléments de jeu
-    const paddle1 = createPaddle(scene, "paddle1", new Vector3(POSITIONS.PADDLE1_X, 0, 0), COLORS.PADDLE1);
-    const paddle2 = createPaddle(scene, "paddle2", new Vector3(POSITIONS.PADDLE2_X, 0, 0), COLORS.PADDLE2);
+    // Créer les éléments de jeu selon le nombre de joueurs
+    if (config.playerCount === 4) {
+        setupFourPlayerMode(scene);
+    } else {
+        setupTwoPlayerMode(scene);
+    }
+}
+
+function setupTwoPlayerMode(scene: Scene): void {
+    const leftPaddle = createPaddle(scene, "leftPaddle", new Vector3(POSITIONS.PADDLE1_X, 0, 0), COLORS.PADDLE1);
+    const rightPaddle = createPaddle(scene, "rightPaddle", new Vector3(POSITIONS.PADDLE2_X, 0, 0), COLORS.PADDLE2);
     const ball = createBall(scene, "ball", new Vector3(POSITIONS.CENTER_X, POSITIONS.CENTER_Y, POSITIONS.CENTER_Z), COLORS.BALL);
     
-    // Effets visuels
-    setupGlowEffect(scene, paddle1);
-    setupGlowEffect(scene, paddle2);
+    setupGlowEffect(scene, leftPaddle);
+    setupGlowEffect(scene, rightPaddle);
+    setupGlowEffect(scene, ball, VISUAL_CONFIG.BALL_GLOW_INTENSITY);
+}
+
+function setupFourPlayerMode(scene: Scene): void {
+    const leftPaddle1 = createPaddle(scene, "leftPaddle1", new Vector3(POSITIONS.PADDLE1_X, 0, 2), COLORS.PADDLE1);
+    const leftPaddle2 = createPaddle(scene, "leftPaddle2", new Vector3(POSITIONS.PADDLE1_X, 0, -2), COLORS.PADDLE1);
+    const rightPaddle1 = createPaddle(scene, "rightPaddle1", new Vector3(POSITIONS.PADDLE2_X, 0, 2), COLORS.PADDLE2);
+    const rightPaddle2 = createPaddle(scene, "rightPaddle2", new Vector3(POSITIONS.PADDLE2_X, 0, -2), COLORS.PADDLE2);
+    const ball = createBall(scene, "ball", new Vector3(POSITIONS.CENTER_X, POSITIONS.CENTER_Y, POSITIONS.CENTER_Z), COLORS.BALL);
+    
+    setupGlowEffect(scene, leftPaddle1);
+    setupGlowEffect(scene, leftPaddle2);
+    setupGlowEffect(scene, rightPaddle1);
+    setupGlowEffect(scene, rightPaddle2);
     setupGlowEffect(scene, ball, VISUAL_CONFIG.BALL_GLOW_INTENSITY);
 }
 

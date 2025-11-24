@@ -4,11 +4,9 @@ import { Engine, Scene } from "@babylonjs/core";
 import { setupScene } from "./scene/sceneSetup";
 import { setupControls } from "./controls/gameControls";
 import { createBallPhysics, type ComposedPhysicsSystem } from "./physics/BallPhysicsComposed";
+import type { GameMode } from "./config/gameModeConfig";
 
-/**
- * État global du jeu Pong
- * Utilise des variables de module pour éviter les fuites mémoire
- */
+
 let engine: Engine | null = null;
 let scene: Scene | null = null;
 let ballPhysics: ComposedPhysicsSystem | null = null;
@@ -33,7 +31,7 @@ function updateScoreDisplay(player1Score: number, player2Score: number): void {
  * Initialise le jeu Pong avec Babylon.js
  * @returns Promise<boolean> - true si l'initialisation réussit
  */
-export async function initPongGame(): Promise<boolean> {
+export async function initPongGame(mode: GameMode = 'pvp1v1'): Promise<boolean> {
     const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
     
     if (!canvas) {
@@ -45,16 +43,17 @@ export async function initPongGame(): Promise<boolean> {
     disposePongGame();
 
     try {
+        console.log(`🎮 Initializing Pong - Mode: ${mode}`);
         // Initialisation du moteur 3D
         engine = new Engine(canvas, true);
         scene = new Scene(engine);
 
         // Configuration de la scène de jeu
-        setupScene(scene);
-        setupControls(scene, engine);
+        setupScene(scene, mode);
+        setupControls(scene, engine, mode);
         
         // Initialisation du système de physique
-        ballPhysics = createBallPhysics(scene);
+        ballPhysics = createBallPhysics(scene, mode);
         ballPhysics.onScoreUpdate = updateScoreDisplay;
         
         // Démarrage de la boucle de rendu
@@ -97,4 +96,3 @@ export function disposePongGame(): void {
         console.error("Error disposing game:", error);
     }
 }
-

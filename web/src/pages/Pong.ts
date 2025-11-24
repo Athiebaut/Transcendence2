@@ -1,3 +1,5 @@
+import type { GameMode } from '../game/config/gameModeConfig';
+
 export default function renderPong(): string {
   return `
     <div
@@ -169,11 +171,13 @@ export default function renderPong(): string {
   `;
 }
 
-export async function initPongGame() {
+export async function initPongGame(mode: GameMode = 'pvp1v1') {
   try {
+    console.log(`🎮 Initializing Pong with mode: ${mode}`);
+
     const { initPongGame: init } = await import('../game/pongGame');
 
-    const success = await init();
+    const success = await init(mode);
 
     // Mettre à jour le texte de statut
     const text = document.querySelector('#game-status') as HTMLElement;

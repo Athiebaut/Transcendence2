@@ -47,7 +47,7 @@ export default function Play(): string {
           <section class="grid gap-5 sm:grid-cols-2">
             <!-- Mode rapide -->
             <a
-              href="/pong?mode=quick"
+              href="/pong?mode=pvp1v1"
               data-nav
               class="glass-panel card-shadow group relative flex flex-col gap-3 p-5 sm:p-6 border border-emerald-500/30 hover:border-emerald-300/70 hover:bg-emerald-500/5 transition-colors"
             >
@@ -59,7 +59,7 @@ export default function Play(): string {
                     <span class="text-xl">⚡</span>
                   </div>
                   <div class="text-left">
-                    <h2 class="font-semibold text-lg">Partie rapide</h2>
+                    <h2 class="font-semibold text-lg">Partie 1v1</h2>
                     <p class="text-xs text-slate-400">
                       Lancer et jouer en quelques secondes.
                     </p>
@@ -89,7 +89,7 @@ export default function Play(): string {
 
             <!-- Mode classé -->
             <a
-              href="/pong?mode=ranked"
+              href="/pong?mode=pvp2v2"
               data-nav
               class="glass-panel card-shadow group relative flex flex-col gap-3 p-5 sm:p-6 border border-amber-500/30 hover:border-amber-300/70 hover:bg-amber-500/5 transition-colors"
             >
@@ -101,7 +101,7 @@ export default function Play(): string {
                     <span class="text-xl">🏅</span>
                   </div>
                   <div class="text-left">
-                    <h2 class="font-semibold text-lg">Partie classée</h2>
+                    <h2 class="font-semibold text-lg">Partie 2v2</h2>
                     <p class="text-xs text-slate-400">
                       Chaque honk compte pour ton rang.
                     </p>
@@ -131,7 +131,7 @@ export default function Play(): string {
 
             <!-- Mode privé -->
             <a
-              href="/pong?mode=private"
+              href="/pong?mode=vsai"
               data-nav
               class="glass-panel card-shadow group relative flex flex-col gap-3 p-5 sm:p-6 border border-sky-500/30 hover:border-sky-300/70 hover:bg-sky-500/5 transition-colors"
             >
@@ -143,7 +143,7 @@ export default function Play(): string {
                     <span class="text-xl">🤝</span>
                   </div>
                   <div class="text-left">
-                    <h2 class="font-semibold text-lg">Partie privée</h2>
+                    <h2 class="font-semibold text-lg">Partie vs IA</h2>
                     <p class="text-xs text-slate-400">
                       Invites tes amis dans ton étang.
                     </p>
@@ -173,7 +173,7 @@ export default function Play(): string {
 
             <!-- Mode chaos -->
             <a
-              href="/pong?mode=chaos"
+              href="/pong?mode=tournament"
               data-nav
               class="glass-panel card-shadow group relative flex flex-col gap-3 p-5 sm:p-6 border border-rose-500/30 hover:border-rose-300/70 hover:bg-rose-500/5 transition-colors"
             >
@@ -185,7 +185,7 @@ export default function Play(): string {
                     <span class="text-xl">🌀</span>
                   </div>
                   <div class="text-left">
-                    <h2 class="font-semibold text-lg">Mode chaos</h2>
+                    <h2 class="font-semibold text-lg">Mode tournois</h2>
                     <p class="text-xs text-slate-400">
                       L'oie a trouvé les réglages avancés.
                     </p>

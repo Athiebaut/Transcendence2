@@ -2,6 +2,7 @@ import { Scene } from "@babylonjs/core";
 import { createBallMovement } from "./systems/ballMovement";
 import { createCollisionSystem } from "./systems/collisionSystem";
 import { createScoringSystem } from "./systems/scoringSystem";
+import type { GameMode } from "../config/gameModeConfig";
 
 /**
  * Interface pour le système de physique composé du jeu Pong
@@ -26,10 +27,10 @@ export interface ComposedPhysicsSystem {
  * Crée le système de physique principal du jeu Pong
  * Compose les sous-systèmes de mouvement, collision et score
  */
-export function createBallPhysics(scene: Scene): ComposedPhysicsSystem {
+export function createBallPhysics(scene: Scene, mode: GameMode = 'pvp1v1'): ComposedPhysicsSystem {
     // Initialisation des sous-systèmes
     const ballMovement = createBallMovement(scene);
-    const collisionSystem = createCollisionSystem(scene);
+    const collisionSystem = createCollisionSystem(scene, mode);
     const scoringSystem = createScoringSystem();
     
     // Boucle de rendu principale - cycle de physique du jeu

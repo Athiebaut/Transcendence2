@@ -1,5 +1,6 @@
 import { Vector3, Mesh } from "@babylonjs/core";
 import { FIELD_CONFIG, GAME_OBJECTS, PHYSICS_CONFIG } from "../../config/gameConfig";
+import type { GameMode } from "../../config/gameModeConfig";
 
 /**
  * Résultat d'une vérification de collision
@@ -21,19 +22,37 @@ export interface CollisionSystem {
 /**
  * Crée le système de collision pour le jeu Pong
  */
-export function createCollisionSystem(scene: any): CollisionSystem {
+export function createCollisionSystem(scene: any, mode: GameMode = 'pvp1v1'): CollisionSystem {
     // Références aux paddles
-    let paddle1: Mesh | null = null;
-    let paddle2: Mesh | null = null;
+    const leftPaddles: Mesh[] = [];
+    const rightPaddles: Mesh[] = [];
     
     /**
      * Initialise le système en trouvant les paddles dans la scène
      */
     function initialize(): void {
-        paddle1 = scene.getMeshByName("paddle1") as Mesh;
-        paddle2 = scene.getMeshByName("paddle2") as Mesh;
+        if (mode === 'pvp2v2') {
+            // Mode 4 joueurs - 2 paddles par côté
+            const lp1 = scene.getMeshByName("leftPaddle1") as Mesh;
+            const lp2 = scene.getMeshByName("leftPaddle2") as Mesh;
+            const rp1 = scene.getMeshByName("rightPaddle1") as Mesh;
+            const rp2 = scene.getMeshByName("rightPaddle2") as Mesh;
+            
+            if (lp1) leftPaddles.push(lp1);
+            if (lp2) leftPaddles.push(lp2);
+            if (rp1) rightPaddles.push(rp1);
+            if (rp2) rightPaddles.push(rp2);
+        }
+        else {
+            // Mode 2 joueurs (PvP, vs AI, Tournament)
+            const lp = scene.getMeshByName("leftPaddle") as Mesh;
+            const rp = scene.getMeshByName("rightPaddle") as Mesh;
+            
+            if (lp) leftPaddles.push(lp);
+            if (rp) rightPaddles.push(rp);
+        }
         
-        if (!paddle1 || !paddle2) {
+        if (leftPaddles.length === 0 || rightPaddles.length === 0) {
             console.error("Paddles not found in scene");
         }
     }
@@ -146,26 +165,31 @@ export function createCollisionSystem(scene: any): CollisionSystem {
             // Phase 1: Vérification des collisions avec les murs
             newVelocity = checkWallCollisions(ballPosition, newVelocity);
             
-            // Phase 2: Vérification des collisions avec les paddles
-            if (paddle1) {
-                const result1 = checkPaddleCollision(paddle1, "right", ballPosition, newVelocity);
-                if (result1.hit) {
-                    newVelocity = result1.velocity;
-                    hitPaddle = paddle1;
-                    newPosition.x = paddle1.position.x - GAME_OBJECTS.PADDLE_WIDTH / 2 - GAME_OBJECTS.BALL_RADIUS;
+            // Phase 2: Vérification des collisions avec les paddles de gauche
+            for (const paddle of leftPaddles) {
+                const result = checkPaddleCollision(paddle, "right", ballPosition, newVelocity);
+                if (result.hit) {
+                    newVelocity = result.velocity;
+                    hitPaddle = paddle;
+                    newPosition.x = paddle.position.x - GAME_OBJECTS.PADDLE_WIDTH / 2 - GAME_OBJECTS.BALL_RADIUS;
+                    break; // Une seule collision à la fois
                 }
             }
             
-            if (paddle2 && !hitPaddle) {
-                const result2 = checkPaddleCollision(paddle2, "left", ballPosition, newVelocity);
-                if (result2.hit) {
-                    newVelocity = result2.velocity;
-                    hitPaddle = paddle2;
-                    newPosition.x = paddle2.position.x + GAME_OBJECTS.PADDLE_WIDTH / 2 + GAME_OBJECTS.BALL_RADIUS;
+            // Phase 3: Vérification des collisions avec les paddles de droite (si pas déjà touché)
+            if (!hitPaddle) {
+                for (const paddle of rightPaddles) {
+                    const result = checkPaddleCollision(paddle, "left", ballPosition, newVelocity);
+                    if (result.hit) {
+                        newVelocity = result.velocity;
+                        hitPaddle = paddle;
+                        newPosition.x = paddle.position.x + GAME_OBJECTS.PADDLE_WIDTH / 2 + GAME_OBJECTS.BALL_RADIUS;
+                        break; // Une seule collision à la fois
+                    }
                 }
             }
             
-            // Phase 3: Ajustement de position pour les murs
+            // Phase 4: Ajustement de position pour les murs
             const wallLimit = FIELD_CONFIG.HEIGHT / 2 - FIELD_CONFIG.WALL_THICKNESS / 2;
             newPosition.z = Math.max(
                 -wallLimit + GAME_OBJECTS.BALL_RADIUS,

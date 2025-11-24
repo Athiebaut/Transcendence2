@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Pong from "./pages/Pong";
 import { setGoose3DActive } from "./goose3d";
 import Play from "./pages/Play";
+import type { GameMode } from "./game/config/gameModeConfig";
 
 
 type RouteHandler = () => string;
@@ -43,7 +44,12 @@ export async function renderRoute(path: string) {
   // Initialiser le jeu Pong si on arrive sur la page Pong
   if (cleanPath === "/pong") {
     const { initPongGame } = await import("./pages/Pong");
-    await initPongGame();
+    
+    // Extraire le paramètre mode de l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode') || 'pvp1v1';
+    
+    await initPongGame(mode as GameMode);
   }
 }
 
