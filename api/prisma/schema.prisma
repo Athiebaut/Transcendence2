@@ -1,41 +1,53 @@
 generator client {
-provider = "prisma-client-js"
-binaryTargets = ["native", "linux-musl-openssl-3.0.x"] // ✔ pour Alpine
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"] // ✔ pour Alpine
 }
-
 
 datasource db {
-provider = "sqlite" // en dev; Postgres en prod recommandé
-url = env("DATABASE_URL")
+  provider = "sqlite" // en dev; Postgres en prod recommandé
+  url      = env("DATABASE_URL")
 }
-
 
 model User {
-id Int @id @default(autoincrement())
-email String @unique
-emailLower String @unique // pour recherche/contrainte insensible à la casse
-username String @unique
-usernameLower String @unique
-passwordHash String?
-createdAt DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  emailLower    String   @unique // pour recherche/contrainte insensible à la casse
+  username      String   @unique
+  avatarUrl     String?
+  usernameLower String   @unique
+  passwordHash  String
+  createdAt     DateTime @default(now())
 
+  accounts    OAuthAccount[]
+  GameHistory GameHistory[]
+  Friend      Friend[]
 
-accounts OAuthAccount[]
-
-
-@@index([createdAt])
+  @@index([createdAt])
 }
 
+model GameHistory {
+  id     Int      @id @default(autoincrement())
+  user   User     @relation(fields: [userId], references: [id])
+  userId Int
+  score  Int
+  date   DateTime @default(now())
+}
+
+model Friend {
+  id       Int  @id @default(autoincrement())
+  user     User @relation(fields: [userId], references: [id])
+  userId   Int
+  friendId Int // l’ID de l’autre utilisateur
+}
 
 model OAuthAccount {
-id Int @id @default(autoincrement())
-provider String
-providerId String
-userId Int
-user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-createdAt DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  provider   String
+  providerId String
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
 
-
-@@unique([provider, providerId])
-@@index([userId])
+  @@unique([provider, providerId])
+  @@index([userId])
 }

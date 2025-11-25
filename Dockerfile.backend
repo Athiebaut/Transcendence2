@@ -1,0 +1,27 @@
+# =========================
+# Dockerfile pour dev
+# =========================
+FROM node:20
+
+# Répertoire de travail dans le conteneur
+WORKDIR /app/back_to_back
+
+# Copier package.json et tsconfig.json
+COPY back_to_back/package*.json ./
+COPY back_to_back/tsconfig.json ./
+
+# Installer toutes les dépendances, y compris devDependencies
+RUN npm install --include=dev
+
+# Copier le code source et Prisma
+COPY back_to_back/src ./src
+COPY prisma ../prisma
+
+# Générer le client Prisma
+RUN npx prisma generate --schema ../prisma/schema.prisma
+
+# Exposer le port utilisé par l'app
+EXPOSE 3042
+
+# Commande pour le développement avec hot reload
+CMD ["npx", "tsx", "watch", "src/index.ts"]
