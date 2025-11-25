@@ -1,6 +1,6 @@
 export default function Play(): string {
   return `
-    <div class="min-h-screen flex flex-col relative overflow-hidden bg-slate-950 text-slate-100">
+    <div class="min-h-screen flex flex-col relative overflow-hidden text-slate-100">
       <!-- Halos de lumière / ambiance -->
       <div class="pointer-events-none absolute inset-0 opacity-60">
         <div class="absolute -top-32 -left-24 w-72 h-72 bg-amber-500/15 rounded-full blur-3xl"></div>

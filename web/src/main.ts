@@ -2,8 +2,18 @@
 
 import { renderRoute } from "./router";
 import { initGoose3D } from "./goose3d";
+import { initBackgroundRotator, forceBackgroundChange } from "./utils/backgroundRotator";
+import "./style.css";
+import "./village-theme.css";
 
 function bootstrap() {
+  // Initialiser la rotation aléatoire des fonds
+  // Options: 'random' (change à chaque page), 'session' (garde pendant la session), 'daily' (change une fois par jour)
+  initBackgroundRotator("random");
+  
+  // Ajouter le bouton de changement manuel (optionnel)
+  // initBackgroundSelector();
+  
   const app = document.querySelector<HTMLDivElement>("#app");
   if (!app) {
     console.error("#app container not found");
@@ -19,6 +29,8 @@ function bootstrap() {
   // Gestion des boutons back/forward
   window.addEventListener("popstate", () => {
     renderRoute(window.location.pathname);
+    // Changer le fond aussi quand on utilise précédent/suivant
+    forceBackgroundChange();
   });
 
   // Navigation interne via <a data-nav>
@@ -35,8 +47,12 @@ function bootstrap() {
     event.preventDefault();
     window.history.pushState({}, "", href);
     renderRoute(href);
+
+    // Changer le fond à chaque navigation interne
+    forceBackgroundChange();
   });
 }
 
 bootstrap();
+
 

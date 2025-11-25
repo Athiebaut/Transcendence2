@@ -125,7 +125,7 @@ export function initGoose3D() {
       if (!meshes || meshes.length === 0) return;
       goose = meshes[0];
 
-      // 👉 TAILLE DU MODÈLE (légèrement plus grande pour mieux la voir)
+      // TAILLE DU MODÈLE (légèrement plus grande pour mieux la voir)
       goose.scaling.scaleInPlace(0.35);
 
       // --- SPAWN ALÉATOIRE EN 2D ---
@@ -179,26 +179,8 @@ export function initGoose3D() {
       } else {
         console.log("Aucune AnimationGroup trouvée sur goose.glb");
       }
-      
-      // Rendre l'oie cliquable
-      goose.isPickable = true;
     }
   );
-
-  // Gestion du clic sur l'oie
-  scene.onPointerDown = (_evt, pickResult) => {
-    if (pickResult.hit && pickResult.pickedMesh && goose) {
-      // Vérifier si on a cliqué sur l'oie ou un de ses enfants
-      let mesh = pickResult.pickedMesh;
-      while (mesh) {
-        if (mesh === goose) {
-          onGooseClick();
-          break;
-        }
-        mesh = mesh.parent as AbstractMesh;
-      }
-    }
-  };
 
   // Limiter le framerate à 30 fps pour éviter la surcharge
   let lastRenderTime = 0;
@@ -281,60 +263,6 @@ function playWalkAnimation() {
     walkAnim.reset();
     // Vitesse d'animation ajustée pour un meilleur rendu
     walkAnim.start(true, 0.5); // loop, vitesse réduite pour plus de fluidité
-  }
-}
-
-// --- Interaction avec l'oie ---
-
-function onGooseClick() {
-  if (!goose || !camera) return;
-  
-  console.log("🦢 HONK! L'oie a été cliquée!");
-  
-  // Faire "sauter" l'oie
-  const jumpHeight = 0.8;
-  const jumpDuration = 0.5;
-  let jumpTime = 0;
-  const startY = goose.position.y;
-  
-  // L'oie peut aussi tourner légèrement pendant le saut
-  const startRotation = goose.rotation.y;
-  const spinAmount = (Math.random() - 0.5) * Math.PI / 4; // Rotation aléatoire ±45°
-  
-  // Animation de saut
-  const jumpInterval = setInterval(() => {
-    if (!goose) {
-      clearInterval(jumpInterval);
-      return;
-    }
-    
-    jumpTime += 0.016; // ~60fps
-    const progress = jumpTime / jumpDuration;
-    
-    if (progress >= 1) {
-      goose.position.y = 0;
-      goose.rotation.y = startRotation + spinAmount;
-      clearInterval(jumpInterval);
-      
-      // Changer d'animation idle après le saut
-      playIdleAnimation();
-      
-      // L'oie va vouloir bouger plus vite maintenant !
-      if (state === "idle") {
-        idleTimer = Math.min(idleTimer, 0.3);
-      }
-      return;
-    }
-    
-    // Trajectoire parabolique avec rotation
-    const jumpProgress = Math.sin(progress * Math.PI);
-    goose.position.y = startY + jumpProgress * jumpHeight;
-    goose.rotation.y = startRotation + spinAmount * progress;
-  }, 16);
-  
-  // Réduire le timer d'idle pour qu'elle bouge plus vite après le clic
-  if (state === "idle") {
-    idleTimer = Math.min(idleTimer, 0.5);
   }
 }
 

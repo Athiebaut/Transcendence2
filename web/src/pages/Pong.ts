@@ -1,17 +1,14 @@
 export default function renderPong(): string {
   return `
-    <div
-      id="pong-container"
-      class="min-h-screen flex flex-col relative overflow-hidden bg-slate-950 text-slate-100"
-    >
+  <div class="min-h-screen flex flex-col relative overflow-hidden text-slate-100">
       <!-- Halos de lumière / ambiance étang -->
       <div class="pointer-events-none absolute inset-0 opacity-60">
         <div class="absolute -top-32 -left-24 w-72 h-72 bg-amber-500/15 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-40 -right-40 w-80 h-80 bg-sky-500/20 rounded-full blur-3xl"></div>
       </div>
 
-      <!-- HEADER : retour home + titre -->
-      <header
+      <!-- HEADER -->
+    <header
         class="relative z-10 px-4 sm:px-6 py-4 flex items-center justify-between border-b border-slate-800/80 bg-slate-950/70 backdrop-blur"
       >
         <a

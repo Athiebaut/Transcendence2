@@ -55,9 +55,9 @@ export default function Home(): string {
             </p>
 
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-              ft_transcendence
+              ft_transcendence,
               <span class="block text-glow mt-1">
-                le Pong social au milieu d'un village d'oies
+                LE Pong social au milieu d'un village d'oies
               </span>
             </h1>
 
