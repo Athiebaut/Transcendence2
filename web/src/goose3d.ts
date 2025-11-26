@@ -73,11 +73,13 @@ export function initGoose3D() {
   canvas.style.top = "0";
   canvas.style.width = "100%";
   canvas.style.height = "100%";
-  canvas.style.pointerEvents = "none"; // Permettre les interactions
-  canvas.style.zIndex = "60";
-  canvas.style.display = "none";       // montré seulement sur la Home
+  canvas.style.pointerEvents = "none"; // Permettre les interactions avec les éléments en dessous
+  canvas.style.zIndex = "999999";      // Z-index TRÈS élevé pour être au-dessus de TOUT
+  canvas.style.display = "none";       // caché par défaut, montré selon la route
   canvas.style.cursor = "default";     // curseur normal
   document.body.appendChild(canvas);
+
+  console.log("🦢 Canvas de l'oie créé et ajouté au DOM");
 
   const dpr = window.devicePixelRatio || 1;
   canvas.width = window.innerWidth * dpr;
@@ -122,11 +124,19 @@ export function initGoose3D() {
       _skeletons,
       animationGroups?: AnimationGroup[]
     ) => {
-      if (!meshes || meshes.length === 0) return;
+      if (!meshes || meshes.length === 0) {
+        console.error("❌ Aucun mesh trouvé dans goose.glb");
+        return;
+      }
       goose = meshes[0];
+      
+      console.log("✅ Modèle goose.glb chargé avec succès !", meshes.length, "meshes");
+      console.log("🦢 Mesh principal:", goose.name);
+      console.log("🦢 Position initiale:", goose.position.x, goose.position.y, goose.position.z);
 
       // TAILLE DU MODÈLE (légèrement plus grande pour mieux la voir)
       goose.scaling.scaleInPlace(0.35);
+      console.log("🦢 Scaling appliqué:", goose.scaling.x);
 
       // --- SPAWN ALÉATOIRE EN 2D ---
       const left = camera?.orthoLeft ?? -5;
@@ -375,8 +385,18 @@ function updateGoose() {
 export function setGoose3DActive(active: boolean) {
   isActive = active;
 
+  console.log(`🦢 Oie 3D ${active ? 'ACTIVÉE' : 'DÉSACTIVÉE'}`);
+
   if (canvas) {
     canvas.style.display = active ? "block" : "none";
+    console.log(`🦢 Canvas display: ${canvas.style.display}`);
+    console.log(`🦢 Canvas z-index: ${canvas.style.zIndex}`);
+    console.log(`🦢 Canvas dans le DOM: ${document.body.contains(canvas)}`);
+    
+    if (active && goose) {
+      console.log(`🦢 Position de l'oie: x=${goose.position.x.toFixed(2)}, y=${goose.position.y.toFixed(2)}, z=${goose.position.z.toFixed(2)}`);
+      console.log(`🦢 Scaling de l'oie: ${goose.scaling.x.toFixed(2)}`);
+    }
   }
 
   // Quand on revient sur la Home, si on est en idle et sans timer,
