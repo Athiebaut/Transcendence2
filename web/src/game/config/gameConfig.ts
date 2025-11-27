@@ -3,6 +3,12 @@
  * Toutes les dimensions et paramètres physiques du jeu
  */
 
+// Configuration des règles de jeu
+export const GAME_RULES = {
+    WIN_SCORE: 1,           // Score pour gagner
+    START_DELAY_MS: 3000    // Délai avant début match
+} as const;
+
 // Dimensions du terrain
 export const FIELD_CONFIG = {
     WIDTH: 12,

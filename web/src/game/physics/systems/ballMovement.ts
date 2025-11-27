@@ -1,5 +1,5 @@
 import { Scene, Vector3, Mesh } from "@babylonjs/core";
-import { PHYSICS_CONFIG } from "../../config/gameConfig";
+import { GAME_RULES, PHYSICS_CONFIG } from "../../config/gameConfig";
 
 /**
  * Interface pour le système de mouvement de la balle
@@ -51,7 +51,7 @@ export function createBallMovement(scene: Scene): BallMovementSystem {
         ballVelocity = new Vector3(0, 0, 0);
         ball.metadata.physicsVelocity = ballVelocity.clone();
         
-        resetWithDelay(3000);
+        resetWithDelay(GAME_RULES.START_DELAY_MS);
     }
     
     /**
@@ -135,12 +135,8 @@ export function createBallMovement(scene: Scene): BallMovementSystem {
         update,
         
         // Position
-        resetPosition(direction?: "left" | "right") {
-            resetPosition(direction);
-        },
-        resetWithDelay(delayMs?: number, direction?: "left" | "right") {
-            resetWithDelay(delayMs, direction);
-        },
+        resetPosition,
+        resetWithDelay,
         setPosition(position: Vector3) { 
             if (ball) ball.position = position; 
         },

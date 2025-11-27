@@ -8,15 +8,13 @@ export type GameMode = 'pvp1v1' | 'pvp2v2' | 'vsai' | 'tournament';
  */
 export interface GameModeConfig {
     mode: GameMode;
-    playerCount: number;    // Nombre de joueurs
-    hasAI: boolean;         // Y a-t-il une IA ?
-    isTournament: boolean;  // Est-ce un tournoi ?
-    description: string;    // Description du mode
+    playerCount: number;
+    hasAI: boolean;
+    isTournament: boolean;
+    description: string;
+    // winScore supprimé → maintenant dans GAME_RULES
 }
 
-/**
- * Configuration de tous les modes de jeu
- */
 export const GAME_MODES: Record<GameMode, GameModeConfig> = {
     'pvp1v1': {
         mode: 'pvp1v1',

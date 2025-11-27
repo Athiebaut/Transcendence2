@@ -50,7 +50,7 @@ export default function renderPong(): string {
                 <span class="text-2xl">🦢</span>
               </div>
               <div class="text-center">
-                <h3 class="text-lg font-bold mb-1">Oie de gauche</h3>
+                <h3 id="player1-name" class="text-lg font-bold mb-1">Oie de gauche</h3>
                 <p class="text-xs text-slate-400">
                   Gardienne de la rive gauche de l'étang
                 </p>
@@ -130,7 +130,7 @@ export default function renderPong(): string {
                 <span class="text-2xl">🦢</span>
               </div>
               <div class="text-center">
-                <h3 class="text-lg font-bold mb-1">Oie de droite</h3>
+                <h3 id="player2-name" class="text-lg font-bold mb-1">Oie de droite</h3>
                 <p class="text-xs text-slate-400">
                   Gardienne de la rive droite de l'étang
                 </p>
@@ -175,28 +175,47 @@ export async function initPongGame(mode: GameMode = 'pvp1v1') {
   try {
     console.log(`🎮 Initializing Pong with mode: ${mode}`);
 
-    const { initPongGame: init } = await import('../game/pongGame');
-
-    const success = await init(mode);
-
-    // Mettre à jour le texte de statut
-    const text = document.querySelector('#game-status') as HTMLElement;
-    if (text) {
-      if (success) {
-        // Masquer le message quand ça fonctionne
-        text.style.display = 'none';
-      } else {
-        // Afficher l'erreur quand ça ne fonctionne pas
-        text.textContent = 'Error loading game';
-        text.className = 'text-red-500 mt-4 text-sm';
-        text.style.display = 'block';
+    // Si mode tournoi, afficher l'écran d'inscription d'abord
+    if (mode === 'tournament') {
+      const { renderTournamentSetup, initTournamentSetup } = await import('../game/tournament/TournamentSetup');
+      
+      // Injecter l'écran d'inscription
+      const container = document.getElementById('pong-container');
+      if (container) {
+        container.insertAdjacentHTML('afterbegin', renderTournamentSetup());
       }
+
+      // Attendre que les joueurs s'inscrivent
+      initTournamentSetup((aliases) => {
+        console.log('🏆 Tournoi démarré avec:', aliases);
+        
+        // Sauvegarder les alias
+        sessionStorage.setItem('tournamentAliases', JSON.stringify(aliases));
+        
+        // Lancer le jeu
+        startGame(mode);
+      });
+      
+      return;
     }
+
+    // Mode normal : lancer directement
+    await startGame(mode);
+
   } catch (error) {
     console.error('Error loading Pong game:', error);
+  }
+}
 
-    const text = document.querySelector('#game-status') as HTMLElement;
-    if (text) {
+async function startGame(mode: GameMode) {
+  const { initPongGame: init } = await import('../game/pongGame');
+  const success = await init(mode);
+
+  const text = document.querySelector('#game-status') as HTMLElement;
+  if (text) {
+    if (success) {
+      text.style.display = 'none';
+    } else {
       text.textContent = 'Error loading game';
       text.className = 'text-red-500 mt-4 text-sm';
       text.style.display = 'block';

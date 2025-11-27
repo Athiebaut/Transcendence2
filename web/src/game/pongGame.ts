@@ -1,10 +1,14 @@
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import { Engine, Scene } from "@babylonjs/core";
-import { setupScene } from "./scene/sceneSetup";
+import { resetPaddles, setupScene } from "./scene/sceneSetup";
 import { setupControls } from "./controls/gameControls";
 import { createBallPhysics, type ComposedPhysicsSystem } from "./physics/BallPhysicsComposed";
 import type { GameMode } from "./config/gameModeConfig";
+import { showVictoryScreen } from './ui/Victory';
+import { showTournamentMatchEnd } from './tournament/MatchEnd';
+import { clearTournament } from "./tournament/TournamentLogic";
+import { updatePlayerNames } from "./ui/displayPlayerNames";
 
 
 let engine: Engine | null = null;
@@ -41,6 +45,10 @@ export async function initPongGame(mode: GameMode = 'pvp1v1'): Promise<boolean> 
 
     // Nettoyage préventif de l'état précédent
     disposePongGame();
+    
+    if (mode === 'tournament') {
+        window.addEventListener('beforeunload', clearTournament);
+    }
 
     try {
         console.log(`🎮 Initializing Pong - Mode: ${mode}`);
@@ -51,11 +59,29 @@ export async function initPongGame(mode: GameMode = 'pvp1v1'): Promise<boolean> 
         // Configuration de la scène de jeu
         setupScene(scene, mode);
         setupControls(scene, engine, mode);
+
+        updatePlayerNames(mode);
         
         // Initialisation du système de physique
         ballPhysics = createBallPhysics(scene, mode);
         ballPhysics.onScoreUpdate = updateScoreDisplay;
         
+        ballPhysics.onGameOver = (winner: number) => {
+            if (!ballPhysics) return;
+            
+            const score = ballPhysics.score;
+            if (mode === 'tournament') {
+                showTournamentMatchEnd(winner, score, () => {
+                    if (scene) resetPaddles(scene, mode);
+                    ballPhysics?.resetGame();
+                });
+            } else {
+                showVictoryScreen(winner, score, mode, () => {
+                    if (scene) resetPaddles(scene, mode);
+                    ballPhysics?.resetGame();
+                });
+            }
+        };
         // Démarrage de la boucle de rendu
         engine.runRenderLoop(() => {
             if (scene) {

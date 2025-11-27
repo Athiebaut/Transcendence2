@@ -22,6 +22,31 @@ export function setupScene(scene: Scene, mode: GameMode = 'pvp1v1'): void {
     }
 }
 
+/**
+ * Remet les paddles à leur position initiale
+ */
+export function resetPaddles(scene: Scene, mode: GameMode): void {
+    const config = GAME_MODES[mode];
+    
+    if (config.playerCount === 4) {
+        const leftPaddle1 = scene.getMeshByName("leftPaddle1");
+        const leftPaddle2 = scene.getMeshByName("leftPaddle2");
+        const rightPaddle1 = scene.getMeshByName("rightPaddle1");
+        const rightPaddle2 = scene.getMeshByName("rightPaddle2");
+        
+        if (leftPaddle1) leftPaddle1.position.z = 2;
+        if (leftPaddle2) leftPaddle2.position.z = -2;
+        if (rightPaddle1) rightPaddle1.position.z = 2;
+        if (rightPaddle2) rightPaddle2.position.z = -2;
+    } else {
+        const leftPaddle = scene.getMeshByName("leftPaddle");
+        const rightPaddle = scene.getMeshByName("rightPaddle");
+        
+        if (leftPaddle) leftPaddle.position.z = 0;
+        if (rightPaddle) rightPaddle.position.z = 0;
+    }
+}
+
 function setupTwoPlayerMode(scene: Scene): void {
     const leftPaddle = createPaddle(scene, "leftPaddle", new Vector3(POSITIONS.PADDLE1_X, 0, 0), COLORS.PADDLE1);
     const rightPaddle = createPaddle(scene, "rightPaddle", new Vector3(POSITIONS.PADDLE2_X, 0, 0), COLORS.PADDLE2);
