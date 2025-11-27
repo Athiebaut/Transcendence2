@@ -1,0 +1,51 @@
+Étape 1 : Le Login (Tu récupères le premier token)
+Dans Postman, tu crées une nouvelle requête.
+
+Tu sélectionnes la méthode POST.
+
+Tu mets l'URL : http://localhost:3000/auth/login.
+
+Dans l'onglet Body, tu choisis "JSON" et tu écris :
+
+JSON
+
+{
+  "email": "ton.email@gmail.com",
+  "password": "tonPasswordSecurise"
+}
+Tu cliques sur SEND (Envoyer).
+
+Résultat : En bas, tu vas voir la réponse du serveur apparaître avec ton access_token. Copie-le !
+
+Étape 2 : L'accès protégé (Tu testes le Guard)
+Maintenant, tu veux générer le QR Code. Cette route est protégée par @UseGuards.
+
+Nouvelle requête GET.
+
+URL : http://localhost:3000/auth/2fa/generate.
+
+Onglet Auth (ou Headers) : Tu choisis "Bearer Token" et tu colles le token copié à l'étape 1.
+
+SEND.
+
+Résultat : Tu reçois l'URL du QR Code.
+
+Étape 3 : La validation (Tu envoies le code)
+Tu scannes le QR code avec ton téléphone. Tu as le code "123456".
+
+Nouvelle requête POST.
+
+URL : http://localhost:3000/auth/2fa/authenticate.
+
+Onglet Auth : Tu laisses le token de l'étape 1.
+
+Onglet Body :
+
+JSON
+
+{ "twoFactorAuthenticationCode": "123456" }
+SEND.
+
+Résultat : Le serveur te renvoie un nouveau token. C'est la preuve que tout marche !
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1vaUB0ZXN0LmNvbSIsInN1YiI6MSwiaXNTZWNvbmRGYWN0b3JBdXRoZW50aWNhdGVkIjp0cnVlLCJpYXQiOjE3NjQyNDkwMjEsImV4cCI6MTc2NDMzNTQyMX0.eHxCR0x3LH41b2zK7EwO9UJoLWPl7oOxy9IJawq1-ms
